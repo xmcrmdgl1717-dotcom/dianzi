@@ -29,36 +29,36 @@
       max-width: 100%
     }
 
+    /* 解除页面宽度限制，让背景和视频可以通栏 */
     .page {
       width: 100%;
-      max-width: 620px; /* 默认移动端最大宽度 */
-      margin: auto;
       background: #0b0b0f;
       min-height: 100vh;
       position: relative;
-      box-shadow: 0 0 30px rgba(0, 0, 0, .5)
     }
 
-    /* 顶部导航 */
+    /* 顶部导航（通栏背景，内容居中） */
     header {
       position: fixed;
       top: 0;
-      left: 50%;
-      transform: translateX(-50%);
+      left: 0;
       width: 100%;
-      max-width: 620px;
       z-index: 20;
       background: linear-gradient(180deg, rgba(11, 11, 15, 0.9) 0%, rgba(11, 11, 15, 0) 100%);
       height: 70px;
-      padding: 12px 16px;
-      color: #fff
+      padding: 12px 0;
+      color: #fff;
     }
 
     .header-inner {
       height: 100%;
+      max-width: 620px; /* 限制宽度并居中 */
+      margin: 0 auto;
+      padding: 0 16px;
       display: flex;
       align-items: center;
-      justify-content: space-between
+      justify-content: space-between;
+      position: relative;
     }
 
     .header-btn {
@@ -93,14 +93,14 @@
       padding-top: 0;
     }
 
-    /* ===== 顶部全屏视频 ===== */
+    /* ===== 顶部全屏视频（占据 100vw 宽度） ===== */
     .video-hero {
       position: relative;
       width: 100%;
       height: 100vh;
       height: 100dvh;
       overflow: hidden;
-      background: #0b0b0f; /* 纯黑底色 */
+      background: #0b0b0f;
     }
 
     /* 视频加载动画 */
@@ -151,8 +151,11 @@
       pointer-events: none;
     }
 
-    /* ===== 中间内容容器 ===== */
+    /* ===== 中间内容容器（限制宽度并居中） ===== */
     .content-section {
+      width: 100%;
+      max-width: 620px;
+      margin: 0 auto;
       padding: 0 12px 20px;
       background: #0b0b0f;
       position: relative;
@@ -359,6 +362,9 @@
 
     /* 页脚 */
     .footer {
+      width: 100%;
+      max-width: 620px;
+      margin: 0 auto;
       text-align: center;
       padding: 12px 16px 100px;
       color: #5a5a66;
@@ -379,8 +385,8 @@
       left: 50%;
       transform: translateX(-50%);
       bottom: calc(16px + env(safe-area-inset-bottom));
-      width: calc(100% - 24px);
-      max-width: 596px;
+      width: calc(100% - 32px);
+      max-width: 588px; /* 控制最大宽度，保证在 PC 端不会变形 */
       z-index: 50;
       display: flex;
       gap: 10px;
@@ -619,37 +625,6 @@
       .primary-button {
         width: 85%
       }
-      .page {
-        box-shadow: none
-      }
-    }
-
-    /* =========================================
-       PC 端全屏适配（视口宽度大于 768px 时生效）
-       ========================================= */
-    @media (min-width: 768px) {
-      .page {
-        max-width: 100%; /* 解除 620px 限制，让视频铺满全屏 */
-        box-shadow: none;
-      }
-      header {
-        max-width: 100%;
-        padding: 20px 40px;
-      }
-      .video-hero {
-        width: 100%;
-        height: 100vh;
-        height: 100dvh;
-      }
-      .content-section {
-        max-width: 620px; /* 下方内容区依然保持居中，保持排版美观 */
-        margin: 0 auto;
-        padding-top: 30px;
-      }
-      .footer {
-        max-width: 620px;
-        margin: 0 auto;
-      }
     }
 
     @media(prefers-reduced-motion:reduce) {
@@ -678,7 +653,7 @@
     
     <main>
       
-      <!-- ===== 1. 首屏全屏视频 ===== -->
+      <!-- ===== 1. 首屏全屏视频（通栏） ===== -->
       <section class="video-hero">
         <div class="video-loader"></div>
         <video
@@ -696,10 +671,10 @@
         <div class="video-overlay"></div>
       </section>
 
-      <!-- ===== 中间内容容器 ===== -->
+      <!-- ===== 2. 中间内容容器（居中对齐） ===== -->
       <div class="content-section">
         
-        <!-- 2. 轮播海报（图一） -->
+        <!-- 轮播海报 -->
         <section class="slideshow">
           <div class="slide"><img src="assets/source/slide-1.webp" alt="澳门新葡京宣传图"></div>
           <div class="slide"><img src="assets/source/slide-2.webp" alt="精选游戏宣传图"></div>
@@ -711,7 +686,7 @@
           </div>
         </section>
 
-        <!-- 3. 进入网页版按钮 -->
+        <!-- 进入网页版按钮 -->
         <section class="primary-stack">
           <button class="primary-button" type="button" onclick="openModal('register')">
             <img src="assets/source/icon-home.webp" alt="">
@@ -719,14 +694,14 @@
           </button>
         </section>
 
-        <!-- 4. 游戏画廊（图二） -->
+        <!-- 游戏画廊 -->
         <section class="gallery" id="games">
           <div class="row" id="row1"><div class="track"><div class="track-half" style="display: flex; gap: 8px;"><button type="button" class="game"><img src="assets/source/game-mahjong.webp" alt="麻将胡了"><div class="name">麻将胡了</div><div class="value muted">x25000</div></button><button type="button" class="game"><img src="assets/source/game-mahjong2.webp" alt="麻将胡了2"><div class="name">麻将胡了2</div><div class="value ">x100000</div></button><button type="button" class="game"><img src="assets/source/game-bounty-queen.webp" alt="赏金女王"><div class="name">赏金女王</div><div class="value muted">x50000</div></button><button type="button" class="game"><img src="assets/source/game-bounty-duel.webp" alt="赏金大对决"><div class="name">赏金大对决</div><div class="value muted">x5000</div></button><button type="button" class="game"><img src="assets/source/game-gold-city.webp" alt="寻宝黄金城"><div class="name">寻宝黄金城</div><div class="value muted">x100000</div></button><button type="button" class="game"><img src="assets/source/game-bounty-captain.webp" alt="赏金船长"><div class="name">赏金船长</div><div class="value muted">x30000</div></button></div><div class="track-half" style="display: flex; gap: 8px;"><button type="button" class="game"><img src="assets/source/game-mahjong.webp" alt="麻将胡了"><div class="name">麻将胡了</div><div class="value muted">x25000</div></button><button type="button" class="game"><img src="assets/source/game-mahjong2.webp" alt="麻将胡了2"><div class="name">麻将胡了2</div><div class="value ">x100000</div></button><button type="button" class="game"><img src="assets/source/game-bounty-queen.webp" alt="赏金女王"><div class="name">赏金女王</div><div class="value muted">x50000</div></button><button type="button" class="game"><img src="assets/source/game-bounty-duel.webp" alt="赏金大对决"><div class="name">赏金大对决</div><div class="value muted">x5000</div></button><button type="button" class="game"><img src="assets/source/game-gold-city.webp" alt="寻宝黄金城"><div class="name">寻宝黄金城</div><div class="value muted">x100000</div></button><button type="button" class="game"><img src="assets/source/game-bounty-captain.webp" alt="赏金船长"><div class="name">赏金船长</div><div class="value muted">x30000</div></button></div></div></div>
           <div class="row reverse" id="row2"><div class="track"><div class="track-half" style="display: flex; gap: 8px;"><button type="button" class="game"><img src="assets/source/game-undead-thief.webp" alt="亡灵大盗"><div class="name">亡灵大盗</div><div class="value muted">x25000</div></button><button type="button" class="game"><img src="assets/source/game-shaolin-soccer.webp" alt="少林足球"><div class="name">少林足球</div><div class="value muted">x4000</div></button><button type="button" class="game"><img src="assets/source/game-lucky-cat.webp" alt="招财喵"><div class="name">招财喵</div><div class="value muted">x20000</div></button><button type="button" class="game"><img src="assets/source/game-qilin.webp" alt="麒麟送宝"><div class="name">麒麟送宝</div><div class="value ">x80000</div></button><button type="button" class="game"><img src="assets/source/game-night-beauty.webp" alt="夜醉佳人"><div class="name">夜醉佳人</div><div class="value muted">x100000</div></button><button type="button" class="game"><img src="assets/source/game-double-joy.webp" alt="双喜临门"><div class="name">双喜临门</div><div class="value muted">x100000</div></button></div><div class="track-half" style="display: flex; gap: 8px;"><button type="button" class="game"><img src="assets/source/game-undead-thief.webp" alt="亡灵大盗"><div class="name">亡灵大盗</div><div class="value muted">x25000</div></button><button type="button" class="game"><img src="assets/source/game-shaolin-soccer.webp" alt="少林足球"><div class="name">少林足球</div><div class="value muted">x4000</div></button><button type="button" class="game"><img src="assets/source/game-lucky-cat.webp" alt="招财喵"><div class="name">招财喵</div><div class="value muted">x20000</div></button><button type="button" class="game"><img src="assets/source/game-qilin.webp" alt="麒麟送宝"><div class="name">麒麟送宝</div><div class="value ">x80000</div></button><button type="button" class="game"><img src="assets/source/game-night-beauty.webp" alt="夜醉佳人"><div class="name">夜醉佳人</div><div class="value muted">x100000</div></button><button type="button" class="game"><img src="assets/source/game-double-joy.webp" alt="双喜临门"><div class="name">双喜临门</div><div class="value muted">x100000</div></button></div></div></div>
           <div class="row" id="row3"><div class="track"><div class="track-half" style="display: flex; gap: 8px;"><button type="button" class="game"><img src="assets/source/game-elephant-god.webp" alt="福运象财神"><div class="name">福运象财神</div><div class="value muted">x100000</div></button><button type="button" class="game"><img src="assets/source/game-irish-elf.webp" alt="爱尔兰精灵"><div class="name">爱尔兰精灵</div><div class="value ">x100000</div></button><button type="button" class="game"><img src="assets/source/game-dragon-treasure.webp" alt="寻龙探宝"><div class="name">寻龙探宝</div><div class="value muted">x2500</div></button><button type="button" class="game"><img src="assets/source/game-golden-bull.webp" alt="十倍金牛"><div class="name">十倍金牛</div><div class="value muted">x2000</div></button><button type="button" class="game"><img src="assets/source/game-fortune-god.webp" alt="赢财神"><div class="name">赢财神</div><div class="value muted">x100000</div></button></div><div class="track-half" style="display: flex; gap: 8px;"><button type="button" class="game"><img src="assets/source/game-elephant-god.webp" alt="福运象财神"><div class="name">福运象财神</div><div class="value muted">x100000</div></button><button type="button" class="game"><img src="assets/source/game-irish-elf.webp" alt="爱尔兰精灵"><div class="name">爱尔兰精灵</div><div class="value ">x100000</div></button><button type="button" class="game"><img src="assets/source/game-dragon-treasure.webp" alt="寻龙探宝"><div class="name">寻龙探宝</div><div class="value muted">x2500</div></button><button type="button" class="game"><img src="assets/source/game-golden-bull.webp" alt="十倍金牛"><div class="name">十倍金牛</div><div class="value muted">x2000</div></button><button type="button" class="game"><img src="assets/source/game-fortune-god.webp" alt="赢财神"><div class="name">赢财神</div><div class="value muted">x100000</div></button></div></div></div>
         </section>
 
-        <!-- 5. App 下载卡片 -->
+        <!-- App 下载卡片 -->
         <section class="app-download-card">
           <img src="assets/source/promo-banner.webp" alt="首存即送8888元，下载APP抢红包最高8888">
           <div class="download-row">
