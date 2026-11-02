@@ -1,137 +1,77 @@
 // ==========================================
-// 1. 轮播图拖拽切换逻辑
+// 1. 轮播图原生滑动逻辑 (最稳定方案)
 // ==========================================
 const slidesContainer = document.getElementById('slidesContainer');
-const slidesTrack = document.getElementById('slidesTrack');
 const dots = document.querySelectorAll('.dot');
-const totalSlides = dots.length;
-let currentIndex = 2; // 默认停留在第三张
-let startX = 0;
-let currentX = 0;
-let isDragging = false;
+let currentIndex = 2; // 默认停在第三张 (索引2)
 let autoSlideTimer;
 
-// 更新轮播图位置及圆点状态
-function updateCarousel(isDragging = false) {
-  if (!slidesTrack) return;
+// 点击圆点平滑滚动
+function showSlide(index) {
+  if (!slidesContainer) return;
+  currentIndex = index;
+  const scrollLeft = index * slidesContainer.clientWidth;
   
-  if (!isDragging) {
-    slidesTrack.style.transition = 'transform 0.3s cubic-bezier(0.25, 1, 0.5, 1)';
-  } else {
-    slidesTrack.style.transition = 'none';
-  }
-  
-  // 基础偏移（每张图占 100% 宽度）
-  let offset = -currentIndex * 100;
-  
-  // 如果正在拖动，加上拖动的距离百分比
-  if (isDragging && slidesContainer) {
-    const diffPercent = ((currentX - startX) / slidesContainer.clientWidth) * 100;
-    offset += diffPercent;
-  }
-  
-  slidesTrack.style.transform = `translateX(${offset}%)`;
-  
-  // 更新圆点状态
+  slidesContainer.scrollTo({
+    left: scrollLeft,
+    behavior: 'smooth'
+  });
+
+  updateDots(index);
+  resetAutoSlide(); // 手动切换后重置自动播放
+}
+
+// 更新圆点状态
+function updateDots(index) {
   dots.forEach((dot, i) => {
-    dot.classList.toggle('active', i === currentIndex);
+    dot.classList.toggle('active', i === index);
   });
 }
 
-// 点击圆点切换
-function showSlide(index) {
-  if (index === currentIndex) return;
-  currentIndex = index;
-  updateCarousel();
-  resetAutoSlide();
-}
-
-// 初始化位置
-updateCarousel();
-
-// 自动轮播
-function startAutoSlide() {
-  autoSlideTimer = setInterval(() => {
-    currentIndex = (currentIndex + 1) % totalSlides;
-    updateCarousel();
-  }, 5000);
-}
-
-function resetAutoSlide() {
-  clearInterval(autoSlideTimer);
-  autoSlideTimer = setTimeout(startAutoSlide, 3000);
-}
-
-// 触摸滑动事件
+// 监听滑动，实时更新圆点
 if (slidesContainer) {
-  slidesContainer.addEventListener('touchstart', (e) => {
+  slidesContainer.addEventListener('scroll', () => {
+    const scrollLeft = slidesContainer.scrollLeft;
+    const width = slidesContainer.clientWidth;
+    const calcIndex = Math.round(scrollLeft / width);
+    
+    if (calcIndex !== currentIndex && calcIndex >= 0 && calcIndex < dots.length) {
+      currentIndex = calcIndex;
+      updateDots(currentIndex);
+    }
+  });
+
+  // 自动播放
+  function startAutoSlide() {
+    autoSlideTimer = setInterval(() => {
+      currentIndex = (currentIndex + 1) % dots.length;
+      const scrollLeft = currentIndex * slidesContainer.clientWidth;
+      slidesContainer.scrollTo({
+        left: scrollLeft,
+        behavior: 'smooth'
+      });
+      updateDots(currentIndex);
+    }, 5000);
+  }
+
+  // 用户触摸时暂停自动播放
+  function resetAutoSlide() {
+    clearInterval(autoSlideTimer);
+    autoSlideTimer = setTimeout(startAutoSlide, 3000);
+  }
+
+  slidesContainer.addEventListener('touchstart', () => {
     clearInterval(autoSlideTimer);
     clearTimeout(autoSlideTimer);
-    isDragging = true;
-    startX = e.touches[0].clientX;
-    currentX = startX;
-    updateCarousel(true);
-  }, { passive: true });
-
-  slidesContainer.addEventListener('touchmove', (e) => {
-    if (!isDragging) return;
-    currentX = e.touches[0].clientX;
-    updateCarousel(true);
   }, { passive: true });
 
   slidesContainer.addEventListener('touchend', () => {
-    if (!isDragging) return;
-    isDragging = false;
-    const diff = currentX - startX;
-    const threshold = slidesContainer.clientWidth / 4; // 滑动超过 1/4 即切换
-    
-    if (diff > threshold && currentIndex > 0) {
-      currentIndex--;
-    } else if (diff < -threshold && currentIndex < totalSlides - 1) {
-      currentIndex++;
-    }
-    
-    updateCarousel();
     resetAutoSlide();
-  });
+  }, { passive: true });
 
-  // 兼容 PC 端鼠标拖拽
-  slidesContainer.addEventListener('mousedown', (e) => {
-    clearInterval(autoSlideTimer);
-    clearTimeout(autoSlideTimer);
-    isDragging = true;
-    startX = e.clientX;
-    currentX = startX;
-    updateCarousel(true);
-    e.preventDefault();
-  });
-
-  window.addEventListener('mousemove', (e) => {
-    if (!isDragging) return;
-    currentX = e.clientX;
-    updateCarousel(true);
-  });
-
-  window.addEventListener('mouseup', () => {
-    if (!isDragging) return;
-    isDragging = false;
-    const diff = currentX - startX;
-    const threshold = slidesContainer.clientWidth / 4;
-    
-    if (diff > threshold && currentIndex > 0) {
-      currentIndex--;
-    } else if (diff < -threshold && currentIndex < totalSlides - 1) {
-      currentIndex++;
-    }
-    
-    updateCarousel();
-    resetAutoSlide();
-  });
-
-  // 启动自动轮播
+  // 初始化自动播放
   startAutoSlide();
 }
-
 
 // ==========================================
 // 2. 游戏画廊逻辑
