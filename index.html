@@ -510,13 +510,26 @@
       opacity: 0.8;
     }
 
-    /* 加载状态提示 */
+    /* 加载状态及底部提示 */
     .lb-loading {
       text-align: center;
-      padding: 12px;
+      padding: 16px 12px;
       font-size: 12px;
-      color: #8e8e9a;
+      color: #6b6b78;
       display: none;
+      letter-spacing: 1px;
+      position: relative;
+    }
+
+    .lb-loading::before,
+    .lb-loading::after {
+      content: "";
+      display: inline-block;
+      width: 30px;
+      height: 1px;
+      background: rgba(255, 255, 255, 0.1);
+      vertical-align: middle;
+      margin: 0 10px;
     }
 
     /* 页脚 */
@@ -996,19 +1009,15 @@
         return x - Math.floor(x);
     }
 
-    // 用户名生成池 (拼音/英文名)
+    // 用户名生成池
     const namePrefixes = ['wang', 'li', 'zhang', 'liu', 'chen', 'yang', 'huang', 'zhao', 'wu', 'zhou', 'xu', 'sun', 'ma', 'zhu', 'hu', 'guo', 'he', 'gao', 'lin', 'luo', 'lucky', 'king', 'vip', 'top', 'rich', 'boss', 'win', 'star', 'moon', 'sun', 'sky', 'sea', 'wind', 'fire'];
     const nameSuffixes = ['01', '88', '99', '66', '77', '8', '9', '0', 'aa', 'bb', 'cc', 'xx', 'yy', 'zz', '168', '888', '666', '520', '1314', '2023', '2024'];
 
     function generateUsername() {
-        // 随机选一个前缀词，截取前2~5个字母
         let word = namePrefixes[Math.floor(seededRandom() * namePrefixes.length)];
         let pLen = Math.floor(seededRandom() * 4) + 2; 
         let prefix = word.slice(0, pLen);
-        
-        // 随机选一个后缀
         let suffix = nameSuffixes[Math.floor(seededRandom() * nameSuffixes.length)];
-        
         return `${prefix}***${suffix}`;
     }
 
@@ -1031,9 +1040,7 @@
 
         // 生成 100 条数据
         for (let i = 0; i < 100; i++) {
-            // 指数衰减比例，保证越往下金额越低，且降幅自然
             let ratio = Math.pow(0.96, i);
-            // 加上 10% 的随机波动，让数据看起来不呆板
             let amount = baseMin + (baseMax - baseMin) * ratio * (0.9 + seededRandom() * 0.2);
             
             data.push({
@@ -1042,10 +1049,8 @@
             });
         }
 
-        // 按金额从高到低排序
         data.sort((a, b) => b.amount - a.amount);
 
-        // 格式化金额（加千分位）
         data.forEach(item => {
             item.formattedAmount = item.amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         });
@@ -1068,7 +1073,7 @@
         isLoading = true;
         lbLoadingEl.style.display = 'block';
 
-        // 模拟网络请求延迟 (300ms)，让加载动画露个脸
+        // 模拟网络请求延迟
         setTimeout(() => {
             const start = (currentPage - 1) * pageSize;
             const end = start + pageSize;
@@ -1094,45 +1099,38 @@
             isLoading = false;
             lbLoadingEl.style.display = 'none';
 
-            // 检查是否全部加载完毕
+            // 检查是否全部加载完毕（100条）
             if (lbListEl.children.length >= 100) {
                 hasMore = false;
-                lbLoadingEl.textContent = '没有更多数据了';
+                lbLoadingEl.textContent = '已展示前100名';
                 lbLoadingEl.style.display = 'block';
             }
         }, 300);
     }
 
     function initLeaderboard(type) {
-        // 每次切换榜单，重置种子以保证数据稳定
         currentSeed = seedBase;
-        
-        // 获取完整 100 条数据
         leaderboardData = generateData(type);
         
-        // 重置状态
         currentPage = 1;
         hasMore = true;
         isLoading = false;
         
-        // 清空列表
         lbListEl.innerHTML = '';
         lbLoadingEl.textContent = '加载中...';
         lbLoadingEl.style.display = 'none';
         
-        // 渲染第一页
         renderPage();
     }
 
     // 绑定滚动事件实现懒加载
     lbListEl.addEventListener('scroll', function() {
-        // 当滚动到距离底部 20px 时触发加载
         if (this.scrollTop + this.clientHeight >= this.scrollHeight - 20) {
             renderPage();
         }
     });
 
-    // 初始化渲染每日榜
+    // 初始化
     initLeaderboard('daily');
 
     // Tab 切换事件
@@ -1140,15 +1138,12 @@
         tab.addEventListener('click', function() {
             if (this.classList.contains('active')) return;
 
-            // 切换 active 样式
             document.querySelectorAll('.lb-tab').forEach(t => t.classList.remove('active'));
             this.classList.add('active');
             
-            // 重新生成数据并初始化
             const type = this.getAttribute('data-type');
             initLeaderboard(type);
             
-            // 切换后重置滚动条到顶部
             lbListEl.scrollTop = 0;
         });
     });
