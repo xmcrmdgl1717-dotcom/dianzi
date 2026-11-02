@@ -31,7 +31,7 @@
 
     .page {
       width: 100%;
-      max-width: 620px;
+      max-width: 620px; /* 默认移动端最大宽度 */
       margin: auto;
       background: #0b0b0f;
       min-height: 100vh;
@@ -100,7 +100,7 @@
       height: 100vh;
       height: 100dvh;
       overflow: hidden;
-      background: #0b0b0f; /* 纯黑底色，避免出现白色或透明闪烁 */
+      background: #0b0b0f; /* 纯黑底色 */
     }
 
     /* 视频加载动画 */
@@ -136,12 +136,10 @@
       background: transparent;
     }
 
-    /* 视频播放后隐藏加载圈 */
     .video-hero.ready .video-loader {
       opacity: 0;
     }
 
-    /* 视频底部渐变过渡，避免和第二屏生硬切断 */
     .video-hero .video-overlay {
       position: absolute;
       left: 0;
@@ -161,10 +159,10 @@
       z-index: 4;
     }
 
-    /* 1. 轮播海报（图一） */
+    /* 1. 轮播海报 */
     .slideshow {
       padding: 0 6px;
-      margin-top: -20px; /* 向上提一点，利用视频的渐变过渡 */
+      margin-top: -20px;
     }
 
     .slide {
@@ -245,7 +243,7 @@
       filter: brightness(0) invert(1);
     }
 
-    /* 3. 游戏画廊（图二） */
+    /* 3. 游戏画廊 */
     .gallery {
       background: #14141a;
       border-radius: 16px;
@@ -626,6 +624,34 @@
       }
     }
 
+    /* =========================================
+       PC 端全屏适配（视口宽度大于 768px 时生效）
+       ========================================= */
+    @media (min-width: 768px) {
+      .page {
+        max-width: 100%; /* 解除 620px 限制，让视频铺满全屏 */
+        box-shadow: none;
+      }
+      header {
+        max-width: 100%;
+        padding: 20px 40px;
+      }
+      .video-hero {
+        width: 100%;
+        height: 100vh;
+        height: 100dvh;
+      }
+      .content-section {
+        max-width: 620px; /* 下方内容区依然保持居中，保持排版美观 */
+        margin: 0 auto;
+        padding-top: 30px;
+      }
+      .footer {
+        max-width: 620px;
+        margin: 0 auto;
+      }
+    }
+
     @media(prefers-reduced-motion:reduce) {
       .primary-button, .bottom-action, .game, .submit {
         transition: none
@@ -654,10 +680,7 @@
       
       <!-- ===== 1. 首屏全屏视频 ===== -->
       <section class="video-hero">
-        <!-- 加载圈 -->
         <div class="video-loader"></div>
-        
-        <!-- 移除 poster，加入 #t=0.1 保证首帧立即解码 -->
         <video
           src="assets/source/home.mp4#t=0.1"
           autoplay
@@ -670,8 +693,6 @@
           disablepictureinpicture
           controlslist="nodownload noplaybackrate"
         ></video>
-        
-        <!-- 底部过渡遮罩 -->
         <div class="video-overlay"></div>
       </section>
 
@@ -756,7 +777,6 @@
     const games = [['麻将胡了', 'game-mahjong.webp', 'x25000', 0], ['麻将胡了2', 'game-mahjong2.webp', 'x100000', 1], ['赏金女王', 'game-bounty-queen.webp', 'x50000', 0], ['赏金大对决', 'game-bounty-duel.webp', 'x5000', 0], ['寻宝黄金城', 'game-gold-city.webp', 'x100000', 0], ['赏金船长', 'game-bounty-captain.webp', 'x30000', 0], ['亡灵大盗', 'game-undead-thief.webp', 'x25000', 0], ['少林足球', 'game-shaolin-soccer.webp', 'x4000', 0], ['招财喵', 'game-lucky-cat.webp', 'x20000', 0], ['麒麟送宝', 'game-qilin.webp', 'x80000', 1], ['夜醉佳人', 'game-night-beauty.webp', 'x100000', 0], ['双喜临门', 'game-double-joy.webp', 'x100000', 0], ['福运象财神', 'game-elephant-god.webp', 'x100000', 0], ['爱尔兰精灵', 'game-irish-elf.webp', 'x100000', 1], ['寻龙探宝', 'game-dragon-treasure.webp', 'x2500', 0], ['十倍金牛', 'game-golden-bull.webp', 'x2000', 0], ['赢财神', 'game-fortune-god.webp', 'x100000', 0]];
     function renderGames() { ['row1', 'row2', 'row3'].forEach((id, ri) => { const row = document.getElementById(id); if (ri === 1) row.classList.add('reverse'); const track = document.createElement('div'); track.className = 'track'; const half = document.createElement('div'); half.className = 'track-half'; half.style.display = 'flex'; half.style.gap = '8px'; games.slice(ri * 6, ri === 2 ? games.length : ri * 6 + 6).forEach(g => { const el = document.createElement('button'); el.type = 'button'; el.className = 'game'; el.onclick = () => openModal('register'); el.innerHTML = '<img src="assets/source/' + g[1] + '" alt="' + g[0] + '"><div class="name">' + g[0] + '</div><div class="value ' + (g[3] ? '' : 'muted') + '">' + g[2] + '</div>'; half.appendChild(el) }); track.appendChild(half); track.appendChild(half.cloneNode(true)); row.appendChild(track) }); } renderGames();
 
-    // ===== 轮播图切换逻辑 =====
     let slideIndex = 0;
     function showSlide(i) { 
       slideIndex = i; 
@@ -772,7 +792,6 @@
     const heroSection = document.querySelector('.video-hero');
 
     if (heroVideo) {
-      // 隐藏 Loading 动画的逻辑
       if (heroVideo.readyState >= 3) {
         heroSection.classList.add('ready');
       } else {
@@ -781,7 +800,6 @@
         }, { once: true });
       }
 
-      // 自动播放被拦截时的兜底补播
       var p = heroVideo.play();
       if (p && p.catch) {
         p.catch(function () {
