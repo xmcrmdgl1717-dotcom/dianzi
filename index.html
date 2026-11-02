@@ -4,7 +4,6 @@
   <title>U8国际</title>
   <!-- 像素 -->
 
-
   <style>
     * {
       box-sizing: border-box;
@@ -14,10 +13,10 @@
 
     body {
       font-family: Arial, "PingFang SC", "Microsoft YaHei", sans-serif;
-      background: #0b0b0f; /* 暗色背景 */
+      background: #0b0b0f; /* 全局暗色背景 */
       color: #e2e2e6;
       min-height: 100vh;
-      overflow-x: hidden; /* 防止全屏视频微溢出产生横向滚动条 */
+      overflow-x: hidden;
     }
 
     a {
@@ -42,7 +41,7 @@
 
     /* 顶部导航 */
     header {
-      position: fixed; /* 悬浮在视频上方 */
+      position: fixed;
       top: 0;
       left: 50%;
       transform: translateX(-50%);
@@ -77,7 +76,7 @@
       width: 24px;
       height: 24px;
       object-fit: contain;
-      filter: brightness(0) invert(1); /* 图标变白，融入暗色 */
+      filter: brightness(0) invert(1);
     }
 
     .logo {
@@ -94,12 +93,12 @@
       padding-top: 0;
     }
 
-    /* ===== 顶部全屏视频（类似 aagameclub 效果） ===== */
+    /* ===== 顶部全屏视频 ===== */
     .video-hero {
       position: relative;
       width: 100%;
       height: 100vh;
-      height: 100dvh; /* 优先使用 dvh，规避移动端地址栏高度抖动 */
+      height: 100dvh;
       overflow: hidden;
       background: #000;
     }
@@ -110,38 +109,75 @@
       left: 0;
       width: 100%;
       height: 100%;
-      object-fit: cover; /* 等比缩放铺满整屏，多余部分裁切，防变形 */
-      object-position: center; /* 保持画面中心点 */
+      object-fit: cover;
+      object-position: center;
       z-index: 1;
     }
 
-    /* 视频渐变遮罩，让底部内容自然过渡 */
     .video-hero .video-overlay {
       position: absolute;
       left: 0;
       bottom: 0;
       width: 100%;
-      height: 45%;
+      height: 30%;
       background: linear-gradient(to top, #0b0b0f 0%, transparent 100%);
       z-index: 2;
       pointer-events: none;
     }
 
-    /* 首屏内容覆盖在视频上 */
-    .hero-content {
-      position: absolute;
-      bottom: 20px;
-      left: 0;
-      width: 100%;
+    /* ===== 视频下方的轮播图/海报 ===== */
+    .slideshow {
+      padding: 10px 18px 0;
+      position: relative;
       z-index: 3;
-      padding: 0 20px;
+      margin-top: -20px; /* 稍微向上提一点，衔接视频过渡 */
+    }
+
+    .slide {
+      display: none;
+    }
+
+    .slide.active {
+      display: block;
+    }
+
+    .slide img {
+      width: 100%;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    }
+
+    .dots {
+      text-align: center;
+      margin: 12px 0 6px
+    }
+
+    .dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      margin: 0 4px;
+      border-radius: 50%;
+      background: #333;
+      cursor: pointer;
+      transition: background .3s;
+    }
+
+    .dot.active {
+      background: #9575cd;
+      width: 20px;
+      border-radius: 4px;
+    }
+
+    /* ===== 点击进入网页版按钮 ===== */
+    .primary-stack {
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 12px;
+      padding: 16px 20px 8px;
     }
 
-    /* 主按钮 */
     .primary-button {
       display: flex;
       align-items: center;
@@ -158,7 +194,6 @@
       font-weight: 600;
       cursor: pointer;
       transition: .2s;
-      backdrop-filter: blur(5px);
     }
 
     .primary-button:hover {
@@ -177,10 +212,31 @@
       filter: brightness(0) invert(1);
     }
 
-    /* 主体内容区 */
+    /* ===== 主体内容区 ===== */
     .content-section {
-      padding: 20px 12px;
+      padding: 10px 12px 20px;
       background: #0b0b0f;
+    }
+
+    .divider {
+      padding: 10px 10px 0;
+      opacity: 0.8;
+    }
+
+    .divider img {
+      width: 100%;
+      height: auto;
+    }
+
+    .section-title {
+      padding: 10px 12px;
+      text-align: center;
+    }
+
+    .section-title img {
+      width: 80%;
+      margin: auto;
+      filter: drop-shadow(0 2px 8px rgba(0,0,0,0.5));
     }
 
     /* 游戏画廊 */
@@ -252,7 +308,7 @@
     .game .value {
       font-weight: 700;
       font-size: 15px;
-      color: #c9a96e; /* 暗金色点缀 */
+      color: #c9a96e;
       margin-top: 2px
     }
 
@@ -570,13 +626,8 @@
     }
   </style>
   <script>
-    // 跳转链接
     var jumpUrl = "https://google.com";
     function jump() {
-      // 回传
-
-
-
       window.location.href = jumpUrl;
     }
   </script>
@@ -594,7 +645,7 @@
     
     <main>
       
-      <!-- ===== 全屏视频首屏 ===== -->
+      <!-- ===== 1. 全屏视频首屏 ===== -->
       <section class="video-hero">
         <video
           src="assets/source/home.mp4"
@@ -610,19 +661,33 @@
           controlslist="nodownload noplaybackrate"
         ></video>
         <div class="video-overlay"></div>
-        
-        <div class="hero-content">
-          <button class="primary-button" type="button" onclick="openModal('register')">
-            <img src="assets/source/icon-home.webp" alt="">
-            <span>点击进入网页版</span>
-          </button>
+      </section>
+
+      <!-- ===== 2. 视频下方的轮播海报（你截图里的内容） ===== -->
+      <section class="slideshow">
+        <div class="slide"><img src="assets/source/slide-1.webp" alt="澳门新葡京宣传图"></div>
+        <div class="slide"><img src="assets/source/slide-2.webp" alt="精选游戏宣传图"></div>
+        <div class="slide active"><img src="assets/source/slide-3.webp" alt="APP体验宣传图"></div>
+        <div class="dots">
+          <span class="dot" onclick="showSlide(0)"></span>
+          <span class="dot" onclick="showSlide(1)"></span>
+          <span class="dot active" onclick="showSlide(2)"></span>
         </div>
       </section>
 
-      <!-- ===== 主体内容 ===== -->
+      <!-- ===== 3. 点击进入网页版按钮 ===== -->
+      <section class="primary-stack">
+        <button class="primary-button" type="button" onclick="openModal('register')">
+          <img src="assets/source/icon-home.webp" alt="">
+          <span>点击进入网页版</span>
+        </button>
+      </section>
+
+      <!-- ===== 4. 主体游戏区 ===== -->
       <div class="content-section">
+        <div class="divider"><img src="assets/source/divider.webp" alt=""></div>
+        <div class="section-title"><img src="assets/source/pg-title.webp" alt="PG电子"></div>
         
-        <!-- PG 电子游戏画廊 -->
         <section class="gallery" id="games">
           <div class="row" id="row1"><div class="track"><div class="track-half" style="display: flex; gap: 8px;"><button type="button" class="game"><img src="assets/source/game-mahjong.webp" alt="麻将胡了"><div class="name">麻将胡了</div><div class="value muted">x25000</div></button><button type="button" class="game"><img src="assets/source/game-mahjong2.webp" alt="麻将胡了2"><div class="name">麻将胡了2</div><div class="value ">x100000</div></button><button type="button" class="game"><img src="assets/source/game-bounty-queen.webp" alt="赏金女王"><div class="name">赏金女王</div><div class="value muted">x50000</div></button><button type="button" class="game"><img src="assets/source/game-bounty-duel.webp" alt="赏金大对决"><div class="name">赏金大对决</div><div class="value muted">x5000</div></button><button type="button" class="game"><img src="assets/source/game-gold-city.webp" alt="寻宝黄金城"><div class="name">寻宝黄金城</div><div class="value muted">x100000</div></button><button type="button" class="game"><img src="assets/source/game-bounty-captain.webp" alt="赏金船长"><div class="name">赏金船长</div><div class="value muted">x30000</div></button></div><div class="track-half" style="display: flex; gap: 8px;"><button type="button" class="game"><img src="assets/source/game-mahjong.webp" alt="麻将胡了"><div class="name">麻将胡了</div><div class="value muted">x25000</div></button><button type="button" class="game"><img src="assets/source/game-mahjong2.webp" alt="麻将胡了2"><div class="name">麻将胡了2</div><div class="value ">x100000</div></button><button type="button" class="game"><img src="assets/source/game-bounty-queen.webp" alt="赏金女王"><div class="name">赏金女王</div><div class="value muted">x50000</div></button><button type="button" class="game"><img src="assets/source/game-bounty-duel.webp" alt="赏金大对决"><div class="name">赏金大对决</div><div class="value muted">x5000</div></button><button type="button" class="game"><img src="assets/source/game-gold-city.webp" alt="寻宝黄金城"><div class="name">寻宝黄金城</div><div class="value muted">x100000</div></button><button type="button" class="game"><img src="assets/source/game-bounty-captain.webp" alt="赏金船长"><div class="name">赏金船长</div><div class="value muted">x30000</div></button></div></div></div>
           <div class="row reverse" id="row2"><div class="track"><div class="track-half" style="display: flex; gap: 8px;"><button type="button" class="game"><img src="assets/source/game-undead-thief.webp" alt="亡灵大盗"><div class="name">亡灵大盗</div><div class="value muted">x25000</div></button><button type="button" class="game"><img src="assets/source/game-shaolin-soccer.webp" alt="少林足球"><div class="name">少林足球</div><div class="value muted">x4000</div></button><button type="button" class="game"><img src="assets/source/game-lucky-cat.webp" alt="招财喵"><div class="name">招财喵</div><div class="value muted">x20000</div></button><button type="button" class="game"><img src="assets/source/game-qilin.webp" alt="麒麟送宝"><div class="name">麒麟送宝</div><div class="value ">x80000</div></button><button type="button" class="game"><img src="assets/source/game-night-beauty.webp" alt="夜醉佳人"><div class="name">夜醉佳人</div><div class="value muted">x100000</div></button><button type="button" class="game"><img src="assets/source/game-double-joy.webp" alt="双喜临门"><div class="name">双喜临门</div><div class="value muted">x100000</div></button></div><div class="track-half" style="display: flex; gap: 8px;"><button type="button" class="game"><img src="assets/source/game-undead-thief.webp" alt="亡灵大盗"><div class="name">亡灵大盗</div><div class="value muted">x25000</div></button><button type="button" class="game"><img src="assets/source/game-shaolin-soccer.webp" alt="少林足球"><div class="name">少林足球</div><div class="value muted">x4000</div></button><button type="button" class="game"><img src="assets/source/game-lucky-cat.webp" alt="招财喵"><div class="name">招财喵</div><div class="value muted">x20000</div></button><button type="button" class="game"><img src="assets/source/game-qilin.webp" alt="麒麟送宝"><div class="name">麒麟送宝</div><div class="value ">x80000</div></button><button type="button" class="game"><img src="assets/source/game-night-beauty.webp" alt="夜醉佳人"><div class="name">夜醉佳人</div><div class="value muted">x100000</div></button><button type="button" class="game"><img src="assets/source/game-double-joy.webp" alt="双喜临门"><div class="name">双喜临门</div><div class="value muted">x100000</div></button></div></div></div>
@@ -680,9 +745,18 @@
     const games = [['麻将胡了', 'game-mahjong.webp', 'x25000', 0], ['麻将胡了2', 'game-mahjong2.webp', 'x100000', 1], ['赏金女王', 'game-bounty-queen.webp', 'x50000', 0], ['赏金大对决', 'game-bounty-duel.webp', 'x5000', 0], ['寻宝黄金城', 'game-gold-city.webp', 'x100000', 0], ['赏金船长', 'game-bounty-captain.webp', 'x30000', 0], ['亡灵大盗', 'game-undead-thief.webp', 'x25000', 0], ['少林足球', 'game-shaolin-soccer.webp', 'x4000', 0], ['招财喵', 'game-lucky-cat.webp', 'x20000', 0], ['麒麟送宝', 'game-qilin.webp', 'x80000', 1], ['夜醉佳人', 'game-night-beauty.webp', 'x100000', 0], ['双喜临门', 'game-double-joy.webp', 'x100000', 0], ['福运象财神', 'game-elephant-god.webp', 'x100000', 0], ['爱尔兰精灵', 'game-irish-elf.webp', 'x100000', 1], ['寻龙探宝', 'game-dragon-treasure.webp', 'x2500', 0], ['十倍金牛', 'game-golden-bull.webp', 'x2000', 0], ['赢财神', 'game-fortune-god.webp', 'x100000', 0]];
     function renderGames() { ['row1', 'row2', 'row3'].forEach((id, ri) => { const row = document.getElementById(id); if (ri === 1) row.classList.add('reverse'); const track = document.createElement('div'); track.className = 'track'; const half = document.createElement('div'); half.className = 'track-half'; half.style.display = 'flex'; half.style.gap = '8px'; games.slice(ri * 6, ri === 2 ? games.length : ri * 6 + 6).forEach(g => { const el = document.createElement('button'); el.type = 'button'; el.className = 'game'; el.onclick = () => openModal('register'); el.innerHTML = '<img src="assets/source/' + g[1] + '" alt="' + g[0] + '"><div class="name">' + g[0] + '</div><div class="value ' + (g[3] ? '' : 'muted') + '">' + g[2] + '</div>'; half.appendChild(el) }); track.appendChild(half); track.appendChild(half.cloneNode(true)); row.appendChild(track) }); } renderGames();
 
+    // ===== 恢复轮播图切换逻辑 =====
+    let slideIndex = 0;
+    function showSlide(i) { 
+      slideIndex = i; 
+      document.querySelectorAll('.slide').forEach((el, n) => el.classList.toggle('active', n === i)); 
+      document.querySelectorAll('.dot').forEach((el, n) => el.classList.toggle('active', n === i)); 
+    } 
+    setInterval(() => showSlide((slideIndex + 1) % 3), 5000);
+
     let mode = 'register', captchaCode = '', captchaLocked = false, captchaTimer = null; function genCaptcha() { const pools = ['ABCDEFGHJKLMNPQRSTUVWXYZ', 'abcdefghjkmnpqrstuvwxyz', '23456789', '@#$%&*!?']; let s = ''; for (let i = 0; i < 6; i++) { const p = pools[i % 3 === 2 ? (i === 4 ? 2 : 3) : i % 3]; s += p[Math.floor(Math.random() * p.length)] } return s } function getCaptcha() { if (captchaLocked) return; captchaCode = genCaptcha(); const box = document.getElementById('captchaCode'); box.textContent = captchaCode; box.classList.remove('locked'); const hint = document.getElementById('formHint'); hint.className = 'hint'; hint.textContent = '验证码已生成，请输入 6 位验证码。' } function lockCaptcha() { captchaLocked = true; const box = document.getElementById('captchaCode'); box.classList.add('locked'); let s = 60; box.textContent = s + 's 后重试'; captchaTimer = setInterval(() => { s--; if (s <= 0) { clearInterval(captchaTimer); captchaTimer = null; captchaLocked = false; box.classList.remove('locked'); box.textContent = '重新获取' } else { box.textContent = s + 's 后重试' } }, 1000) } function resetCaptcha() { if (captchaTimer) { clearInterval(captchaTimer); captchaTimer = null } captchaCode = ''; captchaLocked = false; const box = document.getElementById('captchaCode'); box.classList.remove('locked'); box.textContent = '点击获取' } function openModal(next) { mode = next; renderModal(); document.getElementById('modalBackdrop').classList.add('show'); setTimeout(() => document.getElementById('username').focus(), 30) } function closeModal() { document.getElementById('modalBackdrop').classList.remove('show') } function backdropClose(e) { if (e.target.id === 'modalBackdrop') closeModal() } function switchMode() { openModal(mode === 'register' ? 'login' : 'register') } function renderModal() { const r = mode === 'register'; document.getElementById('modalTitle').textContent = r ? '注册账号' : '登录账号'; document.getElementById('modalSub').textContent = r ? '填写信息完成注册。' : '输入账号密码完成登录。'; document.getElementById('confirmField').style.display = r ? 'block' : 'none'; document.getElementById('phoneField').style.display = r ? 'block' : 'none'; document.getElementById('confirm').required = r; document.getElementById('phone').required = r; document.getElementById('submitBtn').textContent = r ? '注册账号' : '登录账号'; document.getElementById('switchBtn').textContent = r ? '已有账号？前往登录' : '没有账号？注册账号'; document.getElementById('formHint').textContent = ''; resetCaptcha() } function handleSubmit(e) { e.preventDefault(); const hint = document.getElementById('formHint'); hint.className = 'hint'; if (mode === 'register' && document.getElementById('password').value !== document.getElementById('confirm').value) { hint.textContent = '两次输入的密码不一致。'; return } if (!captchaCode) { hint.textContent = '请先点击右侧按钮获取验证码。'; return } if (document.getElementById('captcha').value.trim() !== captchaCode) { hint.textContent = '验证码错误，请等待 60 秒后重新获取。'; document.getElementById('captcha').value = ''; lockCaptcha(); return } hint.className = 'hint ok'; hint.textContent = mode === 'register' ? '注册成功，正在打开登录窗口。' : '登录成功。'; if (mode === 'register') setTimeout(() => openModal('login'), 900) } document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal() });
 
-    /* ===== 全屏视频自动播放兜底 ===== */
+    /* ===== 视频自动播放兜底 ===== */
     document.querySelectorAll('.video-hero video').forEach(function (v) {
       var p = v.play();
       if (p && p.catch) {
