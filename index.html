@@ -415,7 +415,6 @@
       box-shadow: 0 2px 8px rgba(149, 117, 205, 0.3);
     }
 
-    /* 固定高度并滚动，用于懒加载 */
     .lb-list {
       max-height: 460px; 
       overflow-y: auto;
@@ -423,7 +422,6 @@
       scroll-behavior: smooth;
     }
 
-    /* 自定义滚动条 */
     .lb-list::-webkit-scrollbar {
       width: 4px;
     }
@@ -476,7 +474,6 @@
       flex-shrink: 0;
     }
 
-    /* 前三名样式 */
     .lb-item:nth-child(1) .lb-rank { color: #ffd700; font-size: 18px; text-shadow: 0 0 8px rgba(255,215,0,0.4); }
     .lb-item:nth-child(2) .lb-rank { color: #c0c0c0; font-size: 16px; }
     .lb-item:nth-child(3) .lb-rank { color: #cd7f32; font-size: 16px; }
@@ -510,7 +507,6 @@
       opacity: 0.8;
     }
 
-    /* 加载状态及底部提示 */
     .lb-loading {
       text-align: center;
       padding: 16px 12px;
@@ -802,6 +798,130 @@
         transition: none
       }
     }
+
+    /* ===== 新增：Safari 浏览器拦截弹窗样式 ===== */
+    .safari-modal-overlay {
+      display: none; /* 默认隐藏 */
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 20, 30, 0.95);
+      z-index: 99999;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      backdrop-filter: blur(5px);
+    }
+
+    .safari-modal-box {
+      width: min(100%, 340px);
+      background: #1e2432;
+      border-radius: 16px;
+      padding: 30px 20px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+      position: relative;
+      text-align: center;
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .safari-close-btn {
+      position: absolute;
+      right: 15px;
+      top: 15px;
+      background: none;
+      border: none;
+      color: #6b7280;
+      font-size: 20px;
+      cursor: pointer;
+      line-height: 1;
+    }
+
+    /* 纯 CSS 绘制 Safari 指南针图标 */
+    .safari-icon-wrap {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 16px;
+      background: linear-gradient(135deg, #2b88f7, #1a62d6);
+      border-radius: 50%;
+      position: relative;
+      box-shadow: 0 4px 15px rgba(43, 136, 247, 0.4);
+    }
+    
+    .safari-icon-wrap::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 44px;
+      height: 44px;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .safari-icon-arrow {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 8px;
+      height: 24px;
+      background: #ff3b30;
+      transform: translate(-50%, -50%) rotate(45deg);
+      clip-path: polygon(50% 0%, 100% 100%, 50% 80%, 0% 100%);
+    }
+    .safari-icon-arrow::before {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 50%;
+      background: #fff;
+      clip-path: polygon(50% 100%, 100% 0, 0 0);
+    }
+
+    .safari-modal-title {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .safari-modal-desc {
+      font-size: 13px;
+      color: #9ca3af;
+      line-height: 1.6;
+      margin-bottom: 24px;
+      padding: 0 10px;
+    }
+
+    .safari-url-box {
+      background: #151a24;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
+      padding: 16px 12px;
+      font-size: 14px;
+      color: #3b82f6;
+      word-break: break-all;
+      margin-bottom: 24px;
+      font-family: monospace;
+    }
+
+    .safari-copy-btn {
+      width: 100%;
+      background: #2563eb;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 16px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .safari-copy-btn:active {
+      background: #1d4ed8;
+    }
   </style>
 </head>
 
@@ -904,7 +1024,7 @@
     <button class="bottom-action download" type="button" onclick="openModal('register')"><small>下载APP抢红包 最高送888U</small><span>立即下载</span></button>
   </div>
 
-  <!-- 弹窗 -->
+  <!-- 注册/登录弹窗 -->
   <div class="modal-backdrop" id="modalBackdrop" onclick="backdropClose(event)">
     <div class="modal" onclick="event.stopPropagation()">
       <button class="close" type="button" onclick="closeModal()">×</button>
@@ -924,6 +1044,20 @@
         <div class="hint" id="formHint"></div>
       </form>
       <button class="switch" type="button" id="switchBtn" onclick="switchMode()">已有账号？前往登录</button>
+    </div>
+  </div>
+
+  <!-- ===== 新增：Safari 拦截弹窗 ===== -->
+  <div class="safari-modal-overlay" id="safariModal">
+    <div class="safari-modal-box">
+      <button class="safari-close-btn" onclick="closeSafariModal()">✕</button>
+      <div class="safari-icon-wrap">
+        <div class="safari-icon-arrow"></div>
+      </div>
+      <div class="safari-modal-title">请使用 Safari 浏览器打开</div>
+      <div class="safari-modal-desc">系统检测到您正在使用非苹果官方 Safari 访问，为了您的安全请您使用苹果官方 Safari 打开访问</div>
+      <div class="safari-url-box" id="safariUrlText">https://wad33.com/</div>
+      <button class="safari-copy-btn" id="safariCopyBtn">复制当前链接</button>
     </div>
   </div>
 
@@ -994,7 +1128,6 @@
     // 5. 领奖排行榜数据、懒加载逻辑
     // ==========================================
     
-    // 基于日期的伪随机种子，保证同一天内刷新数据不变
     const today = new Date();
     const seedString = `${today.getFullYear()}-${today.getMonth()+1}-${today.getDate()}`;
     let seedBase = 0;
@@ -1009,7 +1142,6 @@
         return x - Math.floor(x);
     }
 
-    // 用户名生成池
     const namePrefixes = ['wang', 'li', 'zhang', 'liu', 'chen', 'yang', 'huang', 'zhao', 'wu', 'zhou', 'xu', 'sun', 'ma', 'zhu', 'hu', 'guo', 'he', 'gao', 'lin', 'luo', 'lucky', 'king', 'vip', 'top', 'rich', 'boss', 'win', 'star', 'moon', 'sun', 'sky', 'sea', 'wind', 'fire'];
     const nameSuffixes = ['01', '88', '99', '66', '77', '8', '9', '0', 'aa', 'bb', 'cc', 'xx', 'yy', 'zz', '168', '888', '666', '520', '1314', '2023', '2024'];
 
@@ -1026,7 +1158,6 @@
         let baseMax = 0;
         let baseMin = 0;
 
-        // 金额量级设定
         if (type === 'daily') {
             baseMax = 188888; 
             baseMin = 12000;
@@ -1038,7 +1169,6 @@
             baseMin = 150000;
         }
 
-        // 生成 100 条数据
         for (let i = 0; i < 100; i++) {
             let ratio = Math.pow(0.96, i);
             let amount = baseMin + (baseMax - baseMin) * ratio * (0.9 + seededRandom() * 0.2);
@@ -1058,7 +1188,6 @@
         return data;
     }
 
-    // 懒加载相关变量
     let leaderboardData = [];
     let currentPage = 1;
     const pageSize = 10;
@@ -1073,7 +1202,6 @@
         isLoading = true;
         lbLoadingEl.style.display = 'block';
 
-        // 模拟网络请求延迟
         setTimeout(() => {
             const start = (currentPage - 1) * pageSize;
             const end = start + pageSize;
@@ -1099,7 +1227,6 @@
             isLoading = false;
             lbLoadingEl.style.display = 'none';
 
-            // 检查是否全部加载完毕（100条）
             if (lbListEl.children.length >= 100) {
                 hasMore = false;
                 lbLoadingEl.textContent = '已展示前100名';
@@ -1123,17 +1250,14 @@
         renderPage();
     }
 
-    // 绑定滚动事件实现懒加载
     lbListEl.addEventListener('scroll', function() {
         if (this.scrollTop + this.clientHeight >= this.scrollHeight - 20) {
             renderPage();
         }
     });
 
-    // 初始化
     initLeaderboard('daily');
 
-    // Tab 切换事件
     document.querySelectorAll('.lb-tab').forEach(tab => {
         tab.addEventListener('click', function() {
             if (this.classList.contains('active')) return;
@@ -1147,5 +1271,84 @@
             lbListEl.scrollTop = 0;
         });
     });
+
+    // ==========================================
+    // 6. Safari 全局拦截逻辑
+    // ==========================================
+    
+    // 检测是否是非苹果 Safari 环境
+    const ua = navigator.userAgent.toLowerCase();
+    const isIOS = /ipad|iphone|ipod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    // 在 iOS 上，只有 Safari 包含 Safari 且不包含其他浏览器的标识
+    const isSafari = isIOS && /safari/.test(ua) && !/crios|fxios|edgios|micromessenger|qq/.test(ua);
+    
+    const safariModal = document.getElementById('safariModal');
+    const safariUrlText = document.getElementById('safariUrlText');
+    const safariCopyBtn = document.getElementById('safariCopyBtn');
+
+    // 如果是非 Safari 环境，则开启全局点击拦截
+    if (!isSafari) {
+      // 使用捕获阶段拦截所有点击
+      document.addEventListener('click', function(e) {
+        // 如果点击的是 Safari 弹窗内部的元素，则放行
+        if (e.target.closest('#safariModal')) {
+          return;
+        }
+
+        // 阻止默认行为（如链接跳转）和事件冒泡（如触发注册弹窗）
+        e.preventDefault();
+        e.stopPropagation();
+
+        // 设置当前网址
+        safariUrlText.textContent = window.location.href;
+        
+        // 显示弹窗
+        safariModal.style.display = 'flex';
+      }, true); // true 表示在捕获阶段触发
+    }
+
+    // 复制链接逻辑
+    safariCopyBtn.addEventListener('click', function() {
+      const url = window.location.href;
+      // 使用现代的剪贴板 API
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(url).then(() => {
+          alert('链接已复制，请前往 Safari 浏览器粘贴打开');
+        }).catch(() => {
+          fallbackCopy(url);
+        });
+      } else {
+        fallbackCopy(url);
+      }
+    });
+
+    // 降级复制方案（兼容老版本浏览器）
+    function fallbackCopy(text) {
+      const textArea = document.createElement("textarea");
+      textArea.value = text;
+      // 将 textarea 移出视口避免页面滚动
+      textArea.style.top = "0";
+      textArea.style.left = "0";
+      textArea.style.position = "fixed";
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+      try {
+        const successful = document.execCommand('copy');
+        if(successful) {
+          alert('链接已复制，请前往 Safari 浏览器粘贴打开');
+        } else {
+          alert('复制失败，请长按上方链接手动复制');
+        }
+      } catch (err) {
+        alert('复制失败，请长按上方链接手动复制');
+      }
+      document.body.removeChild(textArea);
+    }
+
+    // 关闭弹窗逻辑
+    function closeSafariModal() {
+      safariModal.style.display = 'none';
+    }
   </script>
 </body></html>
