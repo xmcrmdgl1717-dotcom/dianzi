@@ -9,7 +9,6 @@ body {
   background: #0b0b0f; 
   color: #e2e2e6;
   min-height: 100vh;
-  /* 移除了 overflow-x: hidden; 允许页面横向滑动 */
 }
 
 a {
@@ -27,8 +26,7 @@ img {
   background: #0b0b0f;
   min-height: 100vh;
   position: relative;
-  overflow-x: auto; /* 允许整个页面横向滚动 */
-  -webkit-overflow-scrolling: touch; /* 移动端顺滑滚动 */
+  overflow-x: hidden;
 }
 
 /* 顶部导航 */
@@ -155,35 +153,39 @@ main {
   z-index: 4;
 }
 
-/* ===== 轮播海报（支持左右滑动） ===== */
+/* ===== 轮播海报（原生滑动支持） ===== */
 .slideshow {
   padding: 0 6px;
   margin-top: -20px;
   width: 100%;
-  overflow-x: auto; /* 开启横向滚动 */
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none; /* 隐藏滚动条(Firefox) */
 }
-.slideshow::-webkit-scrollbar {
-  display: none; /* 隐藏滚动条(Chrome/Safari) */
+
+.slides-wrapper {
+  display: flex;
+  width: 100%;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory; /* 开启强制吸附效果 */
+  -webkit-overflow-scrolling: touch; /* 开启 iOS 惯性滚动 */
+  scrollbar-width: none; /* 隐藏滚动条 (Firefox) */
+  border-radius: 12px;
+}
+
+.slides-wrapper::-webkit-scrollbar {
+  display: none; /* 隐藏滚动条 (Chrome/Safari) */
 }
 
 .slide {
-  display: none;
+  flex: 0 0 100%; /* 每张图占据 100% 的宽度 */
+  scroll-snap-align: center; /* 停止滚动时居中对齐 */
 }
 
-.slide.active {
-  display: block;
-}
-
-/* 让图片保持原比例，如果过宽则允许滑动查看 */
 .slide img {
   width: 100%;
-  min-width: 100%; 
-  max-width: none; /* 解除最大宽度限制，防止挤压 */
   height: auto;
   border-radius: 12px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+  user-select: none;
+  -webkit-user-drag: none;
 }
 
 .dots {
@@ -199,7 +201,7 @@ main {
   border-radius: 50%;
   background: #333;
   cursor: pointer;
-  transition: background .3s;
+  transition: background .3s, width .3s;
 }
 
 .dot.active {
