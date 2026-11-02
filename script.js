@@ -10,7 +10,7 @@ function showSlide(i) {
 setInterval(() => showSlide((slideIndex + 1) % 3), 5000);
 
 // ==========================================
-// 2. 游戏画廊逻辑 (动态生成 HTML 放回 id="games" 的节点中)
+// 2. 游戏画廊逻辑
 // ==========================================
 const games = [['麻将胡了', 'game-mahjong.webp', 'x25000', 0], ['麻将胡了2', 'game-mahjong2.webp', 'x100000', 1], ['赏金女王', 'game-bounty-queen.webp', 'x50000', 0], ['赏金大对决', 'game-bounty-duel.webp', 'x5000', 0], ['寻宝黄金城', 'game-gold-city.webp', 'x100000', 0], ['赏金船长', 'game-bounty-captain.webp', 'x30000', 0], ['亡灵大盗', 'game-undead-thief.webp', 'x25000', 0], ['少林足球', 'game-shaolin-soccer.webp', 'x4000', 0], ['招财喵', 'game-lucky-cat.webp', 'x20000', 0], ['麒麟送宝', 'game-qilin.webp', 'x80000', 1], ['夜醉佳人', 'game-night-beauty.webp', 'x100000', 0], ['双喜临门', 'game-double-joy.webp', 'x100000', 0], ['福运象财神', 'game-elephant-god.webp', 'x100000', 0], ['爱尔兰精灵', 'game-irish-elf.webp', 'x100000', 1], ['寻龙探宝', 'game-dragon-treasure.webp', 'x2500', 0], ['十倍金牛', 'game-golden-bull.webp', 'x2000', 0], ['赢财神', 'game-fortune-god.webp', 'x100000', 0]];
 
