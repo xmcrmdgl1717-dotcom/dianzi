@@ -1,151 +1,467 @@
-<html lang="zh-CN">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>U8国际</title>
-  <!-- 像素 -->
+// ==========================================
+// 1. 轮播图原生滑动逻辑
+// ==========================================
+const slidesWrapper = document.getElementById('slidesWrapper');
+const dots = document.querySelectorAll('.dot');
+let slideIndex = 2; // 默认第三张
+let autoSlideTimer;
+
+// 点击小圆点平滑滚动到对应位置
+function showSlide(index) {
+  if (!slidesWrapper) return;
+  slideIndex = index;
   
-  <!-- 引入外部 CSS -->
-  <link rel="stylesheet" href="style.css">
-</head>
+  // 计算滚动距离并平滑滚动
+  const scrollLeft = index * slidesWrapper.clientWidth;
+  slidesWrapper.scrollTo({
+    left: scrollLeft,
+    behavior: 'smooth'
+  });
 
-<body>
-  <div class="page">
-    <header id="__fpc_id_206120">
-      <div class="header-inner">
-        <button class="header-btn" type="button" onclick="openModal('login')"><img src="assets/source/service.webp" alt="客服"></button>
-        <img class="logo" src="assets/source/logo.webp" alt="U8国际">
-        <button class="header-btn" type="button" onclick="openModal('register')"><img src="assets/source/icon-app.webp" alt="下载APP"></button>
-      </div>
-    </header>
+  updateDots(index);
+  resetAutoSlide(); // 手动点击后重置自动轮播
+}
+
+// 更新小圆点激活状态
+function updateDots(index) {
+  dots.forEach((dot, i) => {
+    dot.classList.toggle('active', i === index);
+  });
+}
+
+// 监听原生滑动事件，更新圆点指示器
+if (slidesWrapper) {
+  slidesWrapper.addEventListener('scroll', () => {
+    // 计算当前滑到了第几张
+    const scrollLeft = slidesWrapper.scrollLeft;
+    const width = slidesWrapper.clientWidth;
+    // 四舍五入获取当前索引
+    const currentIndex = Math.round(scrollLeft / width);
     
-    <main>
-      
-      <!-- 1. 首屏全屏视频 -->
-      <section class="video-hero">
-        <div class="video-loader"></div>
-        <video
-          src="assets/source/home.mp4#t=0.1"
-          autoplay
-          muted
-          loop
-          playsinline
-          webkit-playsinline
-          x5-playsinline
-          preload="auto"
-          disablepictureinpicture
-          controlslist="nodownload noplaybackrate"
-        ></video>
-        <div class="video-overlay"></div>
-      </section>
+    if (currentIndex !== slideIndex && currentIndex >= 0 && currentIndex < dots.length) {
+      slideIndex = currentIndex;
+      updateDots(slideIndex);
+    }
+  });
 
-      <!-- 2. 中间内容容器 -->
-      <div class="content-section">
+  // 自动轮播逻辑
+  function startAutoSlide() {
+    autoSlideTimer = setInterval(() => {
+      let nextIndex = (slideIndex + 1) % dots.length;
+      showSlide(nextIndex);
+    }, 5000);
+  }
+  
+  // 用户触摸或滑动时暂停自动轮播
+  function resetAutoSlide() {
+    clearInterval(autoSlideTimer);
+    // 3秒后重新开始轮播 (如果用户一直滑，就会一直重置)
+    autoSlideTimer = setTimeout(startAutoSlide, 3000);
+  }
+
+  slidesWrapper.addEventListener('touchstart', () => {
+    clearInterval(autoSlideTimer);
+    clearTimeout(autoSlideTimer);
+  }, { passive: true });
+
+  slidesWrapper.addEventListener('touchend', () => {
+    resetAutoSlide();
+  }, { passive: true });
+
+  // 初始化自动轮播
+  startAutoSlide();
+}
+
+// ==========================================
+// 2. 游戏画廊逻辑
+// ==========================================
+const games = [['麻将胡了', 'game-mahjong.webp', 'x25000', 0], ['麻将胡了2', 'game-mahjong2.webp', 'x100000', 1], ['赏金女王', 'game-bounty-queen.webp', 'x50000', 0], ['赏金大对决', 'game-bounty-duel.webp', 'x5000', 0], ['寻宝黄金城', 'game-gold-city.webp', 'x100000', 0], ['赏金船长', 'game-bounty-captain.webp', 'x30000', 0], ['亡灵大盗', 'game-undead-thief.webp', 'x25000', 0], ['少林足球', 'game-shaolin-soccer.webp', 'x4000', 0], ['招财喵', 'game-lucky-cat.webp', 'x20000', 0], ['麒麟送宝', 'game-qilin.webp', 'x80000', 1], ['夜醉佳人', 'game-night-beauty.webp', 'x100000', 0], ['双喜临门', 'game-double-joy.webp', 'x100000', 0], ['福运象财神', 'game-elephant-god.webp', 'x100000', 0], ['爱尔兰精灵', 'game-irish-elf.webp', 'x100000', 1], ['寻龙探宝', 'game-dragon-treasure.webp', 'x2500', 0], ['十倍金牛', 'game-golden-bull.webp', 'x2000', 0], ['赢财神', 'game-fortune-god.webp', 'x100000', 0]];
+
+function renderGames() { 
+  const gamesContainer = document.getElementById('games');
+  if (!gamesContainer) return;
+
+  const rowIds = ['row1', 'row2', 'row3'];
+
+  rowIds.forEach((id, ri) => { 
+    const row = document.createElement('div');
+    row.className = 'row' + (ri === 1 ? ' reverse' : '');
+    row.id = id;
+
+    const track = document.createElement('div'); 
+    track.className = 'track'; 
+    const half = document.createElement('div'); 
+    half.className = 'track-half'; 
+    half.style.display = 'flex'; 
+    half.style.gap = '8px'; 
+    
+    games.slice(ri * 6, ri === 2 ? games.length : ri * 6 + 6).forEach(g => { 
+      const el = document.createElement('button'); 
+      el.type = 'button'; 
+      el.className = 'game'; 
+      el.onclick = () => openModal('register'); 
+      el.innerHTML = '<img src="assets/source/' + g[1] + '" alt="' + g[0] + '"><div class="name">' + g[0] + '</div><div class="value ' + (g[3] ? '' : 'muted') + '">' + g[2] + '</div>'; 
+      half.appendChild(el) 
+    }); 
+    
+    track.appendChild(half); 
+    track.appendChild(half.cloneNode(true)); 
+    row.appendChild(track);
+    gamesContainer.appendChild(row);
+  }); 
+} 
+renderGames();
+
+// ==========================================
+// 3. 弹窗及验证码逻辑
+// ==========================================
+let mode = 'register', captchaCode = '', captchaLocked = false, captchaTimer = null; 
+
+function genCaptcha() { 
+  const pools = ['ABCDEFGHJKLMNPQRSTUVWXYZ', 'abcdefghjkmnpqrstuvwxyz', '23456789', '@#$%&*!?']; 
+  let s = ''; 
+  for (let i = 0; i < 6; i++) { 
+    const p = pools[i % 3 === 2 ? (i === 4 ? 2 : 3) : i % 3]; 
+    s += p[Math.floor(Math.random() * p.length)] 
+  } 
+  return s 
+} 
+
+function getCaptcha() { 
+  if (captchaLocked) return; 
+  captchaCode = genCaptcha(); 
+  const box = document.getElementById('captchaCode'); 
+  box.textContent = captchaCode; 
+  box.classList.remove('locked'); 
+  const hint = document.getElementById('formHint'); 
+  hint.className = 'hint'; 
+  hint.textContent = '验证码已生成，请输入 6 位验证码。' 
+} 
+
+function lockCaptcha() { 
+  captchaLocked = true; 
+  const box = document.getElementById('captchaCode'); 
+  box.classList.add('locked'); 
+  let s = 60; 
+  box.textContent = s + 's 后重试'; 
+  captchaTimer = setInterval(() => { 
+    s--; 
+    if (s <= 0) { 
+      clearInterval(captchaTimer); 
+      captchaTimer = null; 
+      captchaLocked = false; 
+      box.classList.remove('locked'); 
+      box.textContent = '重新获取' 
+    } else { 
+      box.textContent = s + 's 后重试' 
+    } 
+  }, 1000) 
+} 
+
+function resetCaptcha() { 
+  if (captchaTimer) { 
+    clearInterval(captchaTimer); 
+    captchaTimer = null 
+  } 
+  captchaCode = ''; 
+  captchaLocked = false; 
+  const box = document.getElementById('captchaCode'); 
+  box.classList.remove('locked'); 
+  box.textContent = '点击获取' 
+} 
+
+function openModal(next) { 
+  mode = next; 
+  renderModal(); 
+  document.getElementById('modalBackdrop').classList.add('show'); 
+  setTimeout(() => document.getElementById('username').focus(), 30) 
+} 
+
+function closeModal() { 
+  document.getElementById('modalBackdrop').classList.remove('show') 
+} 
+
+function backdropClose(e) { 
+  if (e.target.id === 'modalBackdrop') closeModal() 
+} 
+
+function switchMode() { 
+  openModal(mode === 'register' ? 'login' : 'register') 
+} 
+
+function renderModal() { 
+  const r = mode === 'register'; 
+  document.getElementById('modalTitle').textContent = r ? '注册账号' : '登录账号'; 
+  document.getElementById('modalSub').textContent = r ? '填写信息完成注册。' : '输入账号密码完成登录。'; 
+  document.getElementById('confirmField').style.display = r ? 'block' : 'none'; 
+  document.getElementById('phoneField').style.display = r ? 'block' : 'none'; 
+  document.getElementById('confirm').required = r; 
+  document.getElementById('phone').required = r; 
+  document.getElementById('submitBtn').textContent = r ? '注册账号' : '登录账号'; 
+  document.getElementById('switchBtn').textContent = r ? '已有账号？前往登录' : '没有账号？注册账号'; 
+  document.getElementById('formHint').textContent = ''; 
+  resetCaptcha() 
+} 
+
+function handleSubmit(e) { 
+  e.preventDefault(); 
+  const hint = document.getElementById('formHint'); 
+  hint.className = 'hint'; 
+  if (mode === 'register' && document.getElementById('password').value !== document.getElementById('confirm').value) { 
+    hint.textContent = '两次输入的密码不一致。'; 
+    return 
+  } 
+  if (!captchaCode) { 
+    hint.textContent = '请先点击右侧按钮获取验证码。'; 
+    return 
+  } 
+  if (document.getElementById('captcha').value.trim() !== captchaCode) { 
+    hint.textContent = '验证码错误，请等待 60 秒后重新获取。'; 
+    document.getElementById('captcha').value = ''; 
+    lockCaptcha(); 
+    return 
+  } 
+  hint.className = 'hint ok'; 
+  hint.textContent = mode === 'register' ? '注册成功，正在打开登录窗口。' : '登录成功。'; 
+  if (mode === 'register') setTimeout(() => openModal('login'), 900) 
+} 
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal() });
+
+// ==========================================
+// 4. 视频加载及播放兜底
+// ==========================================
+const heroVideo = document.querySelector('.video-hero video');
+const heroSection = document.querySelector('.video-hero');
+
+if (heroVideo) {
+  if (heroVideo.readyState >= 3) {
+    heroSection.classList.add('ready');
+  } else {
+    heroVideo.addEventListener('canplay', function () {
+      heroSection.classList.add('ready');
+    }, { once: true });
+  }
+
+  var p = heroVideo.play();
+  if (p && p.catch) {
+    p.catch(function () {
+      var retry = function () {
+        heroVideo.play().catch(function () {});
+        document.removeEventListener('touchstart', retry);
+        document.removeEventListener('click', retry);
+      };
+      document.addEventListener('touchstart', retry, { once: true, passive: true });
+      document.addEventListener('click', retry, { once: true });
+    });
+  }
+}
+
+// ==========================================
+// 5. 领奖排行榜数据、懒加载逻辑
+// ==========================================
+const today = new Date();
+const seedString = `${today.getFullYear()}-${today.getMonth()+1}-${today.getDate()}`;
+let seedBase = 0;
+for (let i = 0; i < seedString.length; i++) {
+    seedBase += seedString.charCodeAt(i);
+}
+
+let currentSeed = seedBase;
+
+function seededRandom() {
+    let x = Math.sin(currentSeed++) * 10000;
+    return x - Math.floor(x);
+}
+
+const namePrefixes = ['wang', 'li', 'zhang', 'liu', 'chen', 'yang', 'huang', 'zhao', 'wu', 'zhou', 'xu', 'sun', 'ma', 'zhu', 'hu', 'guo', 'he', 'gao', 'lin', 'luo', 'lucky', 'king', 'vip', 'top', 'rich', 'boss', 'win', 'star', 'moon', 'sun', 'sky', 'sea', 'wind', 'fire'];
+const nameSuffixes = ['01', '88', '99', '66', '77', '8', '9', '0', 'aa', 'bb', 'cc', 'xx', 'yy', 'zz', '168', '888', '666', '520', '1314', '2023', '2024'];
+
+function generateUsername() {
+    let word = namePrefixes[Math.floor(seededRandom() * namePrefixes.length)];
+    let pLen = Math.floor(seededRandom() * 4) + 2; 
+    let prefix = word.slice(0, pLen);
+    let suffix = nameSuffixes[Math.floor(seededRandom() * nameSuffixes.length)];
+    return `${prefix}***${suffix}`;
+}
+
+function generateData(type) {
+    let data = [];
+    let baseMax = 0;
+    let baseMin = 0;
+
+    if (type === 'daily') {
+        baseMax = 188888; 
+        baseMin = 12000;
+    } else if (type === 'weekly') {
+        baseMax = 1288888; 
+        baseMin = 36000;
+    } else {
+        baseMax = 6888888; 
+        baseMin = 150000;
+    }
+
+    for (let i = 0; i < 100; i++) {
+        let ratio = Math.pow(0.96, i);
+        let amount = baseMin + (baseMax - baseMin) * ratio * (0.9 + seededRandom() * 0.2);
         
-        <!-- 轮播海报 (修改了结构，外层加入 slides-wrapper 用于原生滑动) -->
-        <section class="slideshow">
-          <div class="slides-wrapper" id="slidesWrapper">
-            <div class="slide"><img src="assets/source/slide-1.webp" alt="澳门新葡京宣传图"></div>
-            <div class="slide"><img src="assets/source/slide-2.webp" alt="精选游戏宣传图"></div>
-            <div class="slide active"><img src="assets/source/slide-3.webp" alt="APP体验宣传图"></div>
-          </div>
-          <div class="dots">
-            <span class="dot" onclick="showSlide(0)"></span>
-            <span class="dot" onclick="showSlide(1)"></span>
-            <span class="dot active" onclick="showSlide(2)"></span>
-          </div>
-        </section>
+        data.push({
+            name: generateUsername(),
+            amount: parseFloat(amount.toFixed(2))
+        });
+    }
 
-        <!-- 进入网页版按钮 -->
-        <section class="primary-stack">
-          <button class="primary-button" type="button" onclick="openModal('register')">
-            <img src="assets/source/icon-home.webp" alt="">
-            <span>点击进入网页版</span>
-          </button>
-        </section>
+    data.sort((a, b) => b.amount - a.amount);
 
-        <!-- 游戏画廊 -->
-        <section class="gallery" id="games">
-          <!-- JS 动态渲染生成 -->
-        </section>
+    data.forEach(item => {
+        item.formattedAmount = item.amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    });
 
-        <!-- App 下载卡片 -->
-        <section class="app-download-card">
-          <img src="assets/source/promo-banner.webp" alt="首存即送8888元，下载APP抢红包最高8888">
-          <div class="download-row">
-            <button type="button" onclick="openModal('register')"><img src="assets/source/btn-android.webp" alt="Android下载"></button>
-            <button type="button" onclick="openModal('register')"><img src="assets/source/btn-ios.webp" alt="iOS下载"></button>
-          </div>
-        </section>
+    return data;
+}
 
-        <!-- ===== 3. 领奖排行榜（懒加载） ===== -->
-        <section class="leaderboard">
-          <div class="lb-header">
-            <div class="lb-title">领奖排行榜</div>
-            <div class="lb-tabs">
-              <div class="lb-tab active" data-type="daily">每日</div>
-              <div class="lb-tab" data-type="weekly">每周</div>
-              <div class="lb-tab" data-type="monthly">每月</div>
-            </div>
-          </div>
-          <div class="lb-list" id="lb-list">
-            <!-- JS 动态渲染 -->
-          </div>
-          <div class="lb-loading" id="lb-loading">加载中...</div>
-        </section>
+let leaderboardData = [];
+let currentPage = 1;
+const pageSize = 10;
+let isLoading = false;
+let hasMore = true;
 
-      </div>
+const lbListEl = document.getElementById('lb-list');
+const lbLoadingEl = document.getElementById('lb-loading');
 
-      <footer class="footer">
-        <div>COPYRIGHT © 2026 U8.com All Rights Reserved.</div>
-      </footer>
-    </main>
-  </div>
+function renderPage() {
+    if (isLoading || !hasMore) return;
+    isLoading = true;
+    lbLoadingEl.style.display = 'block';
 
-  <!-- 底部悬浮操作栏 -->
-  <div class="bottom-actions">
-    <button class="bottom-action" type="button" onclick="openModal('register')"><small>注册即送最高88U</small><span>立即游戏</span></button>
-    <button class="bottom-action download" type="button" onclick="openModal('register')"><small>下载APP抢红包 最高送888U</small><span>立即下载</span></button>
-  </div>
+    setTimeout(() => {
+        const start = (currentPage - 1) * pageSize;
+        const end = start + pageSize;
+        const pageData = leaderboardData.slice(start, end);
 
-  <!-- 注册/登录弹窗 -->
-  <div class="modal-backdrop" id="modalBackdrop" onclick="backdropClose(event)">
-    <div class="modal" onclick="event.stopPropagation()">
-      <button class="close" type="button" onclick="closeModal()">×</button>
-      <h2 id="modalTitle">注册账号</h2>
-      <p id="modalSub">填写信息完成注册。</p>
-      <form onsubmit="handleSubmit(event)">
-        <div class="field"><label for="username">用户名</label><input id="username" required="" autocomplete="off"></div>
-        <div class="field"><label for="password">登录密码</label><input id="password" type="password" required="" autocomplete="new-password" aria-autocomplete="list"></div>
-        <div class="field" id="confirmField" style="display: block;"><label for="confirm">确认密码</label><input id="confirm" type="password" autocomplete="new-password" required=""></div>
-        <div class="field" id="phoneField" style="display: block;"><label for="phone">手机号码</label><input id="phone" inputmode="tel" autocomplete="tel" required=""></div>
-        <div class="field"><label for="captcha">验证码</label>
-          <div class="code-row"><input id="captcha" required="" maxlength="6" placeholder="输入6位验证码">
-            <div class="code-box" id="captchaCode" onclick="getCaptcha()">点击获取</div>
-          </div>
-        </div>
-        <button class="submit" type="submit" id="submitBtn">注册账号</button>
-        <div class="hint" id="formHint"></div>
-      </form>
-      <button class="switch" type="button" id="switchBtn" onclick="switchMode()">已有账号？前往登录</button>
-    </div>
-  </div>
+        let html = '';
+        pageData.forEach((item, index) => {
+            let rank = start + index + 1;
+            html += `
+                <div class="lb-item">
+                    <div class="lb-user">
+                        <div class="lb-rank">${rank}</div>
+                        <div class="lb-name">${item.name}</div>
+                    </div>
+                    <div class="lb-amount">${item.formattedAmount}</div>
+                </div>
+            `;
+        });
 
-  <!-- ===== Safari 拦截弹窗 ===== -->
-  <div class="safari-modal-overlay" id="safariModal">
-    <div class="safari-modal-box">
-      <button class="safari-close-btn" onclick="closeSafariModal()">✕</button>
-      <div class="safari-icon-wrap">
-        <div class="safari-icon-arrow"></div>
-      </div>
-      <div class="safari-modal-title">请使用 Safari 浏览器打开</div>
-      <div class="safari-modal-desc">系统检测到您正在使用非苹果官方 Safari 访问，为了您的安全请您使用苹果官方 Safari 打开访问</div>
-      <div class="safari-url-box" id="safariUrlText">https://wad33.com/</div>
-      <button class="safari-copy-btn" id="safariCopyBtn">复制当前链接</button>
-    </div>
-  </div>
+        lbListEl.insertAdjacentHTML('beforeend', html);
 
-  <!-- 引入外部 JS -->
-  <script src="script.js"></script>
-</body>
-</html>
+        currentPage++;
+        isLoading = false;
+        lbLoadingEl.style.display = 'none';
+
+        if (lbListEl.children.length >= 100) {
+            hasMore = false;
+            lbLoadingEl.textContent = '已展示前100名';
+            lbLoadingEl.style.display = 'block';
+        }
+    }, 300);
+}
+
+function initLeaderboard(type) {
+    currentSeed = seedBase;
+    leaderboardData = generateData(type);
+    
+    currentPage = 1;
+    hasMore = true;
+    isLoading = false;
+    
+    lbListEl.innerHTML = '';
+    lbLoadingEl.textContent = '加载中...';
+    lbLoadingEl.style.display = 'none';
+    
+    renderPage();
+}
+
+lbListEl.addEventListener('scroll', function() {
+    if (this.scrollTop + this.clientHeight >= this.scrollHeight - 20) {
+        renderPage();
+    }
+});
+
+initLeaderboard('daily');
+
+document.querySelectorAll('.lb-tab').forEach(tab => {
+    tab.addEventListener('click', function() {
+        if (this.classList.contains('active')) return;
+
+        document.querySelectorAll('.lb-tab').forEach(t => t.classList.remove('active'));
+        this.classList.add('active');
+        
+        const type = this.getAttribute('data-type');
+        initLeaderboard(type);
+        
+        lbListEl.scrollTop = 0;
+    });
+});
+
+// ==========================================
+// 6. Safari 全局拦截逻辑
+// ==========================================
+const ua = navigator.userAgent.toLowerCase();
+const isIOS = /ipad|iphone|ipod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+const isSafari = isIOS && /safari/.test(ua) && !/crios|fxios|edgios|micromessenger|qq/.test(ua);
+
+const safariModal = document.getElementById('safariModal');
+const safariUrlText = document.getElementById('safariUrlText');
+const safariCopyBtn = document.getElementById('safariCopyBtn');
+
+if (!isSafari) {
+  document.addEventListener('click', function(e) {
+    if (e.target.closest('#safariModal')) {
+      return;
+    }
+    e.preventDefault();
+    e.stopPropagation();
+    safariUrlText.textContent = window.location.href;
+    safariModal.style.display = 'flex';
+  }, true); 
+}
+
+safariCopyBtn.addEventListener('click', function() {
+  const url = window.location.href;
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(url).then(() => {
+      alert('链接已复制，请前往 Safari 浏览器粘贴打开');
+    }).catch(() => {
+      fallbackCopy(url);
+    });
+  } else {
+    fallbackCopy(url);
+  }
+});
+
+function fallbackCopy(text) {
+  const textArea = document.createElement("textarea");
+  textArea.value = text;
+  textArea.style.top = "0";
+  textArea.style.left = "0";
+  textArea.style.position = "fixed";
+  document.body.appendChild(textArea);
+  textArea.focus();
+  textArea.select();
+  try {
+    const successful = document.execCommand('copy');
+    if(successful) {
+      alert('链接已复制，请前往 Safari 浏览器粘贴打开');
+    } else {
+      alert('复制失败，请长按上方链接手动复制');
+    }
+  } catch (err) {
+    alert('复制失败，请长按上方链接手动复制');
+  }
+  document.body.removeChild(textArea);
+}
+
+function closeSafariModal() {
+  safariModal.style.display = 'none';
+}
