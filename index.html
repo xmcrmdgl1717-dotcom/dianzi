@@ -42,11 +42,13 @@
       <!-- 2. 中间内容容器 -->
       <div class="content-section">
         
-        <!-- 轮播海报 (支持左右滑动) -->
+        <!-- 轮播海报 (原生滚动) -->
         <section class="slideshow">
-          <div class="slide"><img src="assets/source/slide-1.webp" alt="澳门新葡京宣传图"></div>
-          <div class="slide"><img src="assets/source/slide-2.webp" alt="精选游戏宣传图"></div>
-          <div class="slide active"><img src="assets/source/slide-3.webp" alt="APP体验宣传图"></div>
+          <div class="slides-container" id="slidesContainer">
+            <div class="slide"><img src="assets/source/slide-1.webp" alt="澳门新葡京宣传图"></div>
+            <div class="slide"><img src="assets/source/slide-2.webp" alt="精选游戏宣传图"></div>
+            <div class="slide"><img src="assets/source/slide-3.webp" alt="APP体验宣传图"></div>
+          </div>
           <div class="dots">
             <span class="dot" onclick="showSlide(0)"></span>
             <span class="dot" onclick="showSlide(1)"></span>
