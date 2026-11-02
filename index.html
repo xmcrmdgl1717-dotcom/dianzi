@@ -100,7 +100,28 @@
       height: 100vh;
       height: 100dvh;
       overflow: hidden;
-      background: #000;
+      background: #0b0b0f; /* 纯黑底色，避免出现白色或透明闪烁 */
+    }
+
+    /* 视频加载动画 */
+    .video-loader {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 36px;
+      height: 36px;
+      margin: -18px 0 0 -18px;
+      border: 3px solid rgba(149, 117, 205, 0.2);
+      border-top-color: #9575cd;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      z-index: 1;
+      transition: opacity 0.4s ease;
+      pointer-events: none;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
     }
 
     .video-hero video {
@@ -111,7 +132,13 @@
       height: 100%;
       object-fit: cover;
       object-position: center;
-      z-index: 1;
+      z-index: 2;
+      background: transparent;
+    }
+
+    /* 视频播放后隐藏加载圈 */
+    .video-hero.ready .video-loader {
+      opacity: 0;
     }
 
     /* 视频底部渐变过渡，避免和第二屏生硬切断 */
@@ -122,7 +149,7 @@
       width: 100%;
       height: 25%;
       background: linear-gradient(to top, #0b0b0f 0%, transparent 100%);
-      z-index: 2;
+      z-index: 3;
       pointer-events: none;
     }
 
@@ -131,7 +158,7 @@
       padding: 0 12px 20px;
       background: #0b0b0f;
       position: relative;
-      z-index: 3;
+      z-index: 4;
     }
 
     /* 1. 轮播海报（图一） */
@@ -627,9 +654,12 @@
       
       <!-- ===== 1. 首屏全屏视频 ===== -->
       <section class="video-hero">
+        <!-- 加载圈 -->
+        <div class="video-loader"></div>
+        
+        <!-- 移除 poster，加入 #t=0.1 保证首帧立即解码 -->
         <video
-          src="assets/source/home.mp4"
-          poster="assets/source/slide-1.webp"
+          src="assets/source/home.mp4#t=0.1"
           autoplay
           muted
           loop
@@ -640,6 +670,8 @@
           disablepictureinpicture
           controlslist="nodownload noplaybackrate"
         ></video>
+        
+        <!-- 底部过渡遮罩 -->
         <div class="video-overlay"></div>
       </section>
 
@@ -735,13 +767,26 @@
 
     let mode = 'register', captchaCode = '', captchaLocked = false, captchaTimer = null; function genCaptcha() { const pools = ['ABCDEFGHJKLMNPQRSTUVWXYZ', 'abcdefghjkmnpqrstuvwxyz', '23456789', '@#$%&*!?']; let s = ''; for (let i = 0; i < 6; i++) { const p = pools[i % 3 === 2 ? (i === 4 ? 2 : 3) : i % 3]; s += p[Math.floor(Math.random() * p.length)] } return s } function getCaptcha() { if (captchaLocked) return; captchaCode = genCaptcha(); const box = document.getElementById('captchaCode'); box.textContent = captchaCode; box.classList.remove('locked'); const hint = document.getElementById('formHint'); hint.className = 'hint'; hint.textContent = '验证码已生成，请输入 6 位验证码。' } function lockCaptcha() { captchaLocked = true; const box = document.getElementById('captchaCode'); box.classList.add('locked'); let s = 60; box.textContent = s + 's 后重试'; captchaTimer = setInterval(() => { s--; if (s <= 0) { clearInterval(captchaTimer); captchaTimer = null; captchaLocked = false; box.classList.remove('locked'); box.textContent = '重新获取' } else { box.textContent = s + 's 后重试' } }, 1000) } function resetCaptcha() { if (captchaTimer) { clearInterval(captchaTimer); captchaTimer = null } captchaCode = ''; captchaLocked = false; const box = document.getElementById('captchaCode'); box.classList.remove('locked'); box.textContent = '点击获取' } function openModal(next) { mode = next; renderModal(); document.getElementById('modalBackdrop').classList.add('show'); setTimeout(() => document.getElementById('username').focus(), 30) } function closeModal() { document.getElementById('modalBackdrop').classList.remove('show') } function backdropClose(e) { if (e.target.id === 'modalBackdrop') closeModal() } function switchMode() { openModal(mode === 'register' ? 'login' : 'register') } function renderModal() { const r = mode === 'register'; document.getElementById('modalTitle').textContent = r ? '注册账号' : '登录账号'; document.getElementById('modalSub').textContent = r ? '填写信息完成注册。' : '输入账号密码完成登录。'; document.getElementById('confirmField').style.display = r ? 'block' : 'none'; document.getElementById('phoneField').style.display = r ? 'block' : 'none'; document.getElementById('confirm').required = r; document.getElementById('phone').required = r; document.getElementById('submitBtn').textContent = r ? '注册账号' : '登录账号'; document.getElementById('switchBtn').textContent = r ? '已有账号？前往登录' : '没有账号？注册账号'; document.getElementById('formHint').textContent = ''; resetCaptcha() } function handleSubmit(e) { e.preventDefault(); const hint = document.getElementById('formHint'); hint.className = 'hint'; if (mode === 'register' && document.getElementById('password').value !== document.getElementById('confirm').value) { hint.textContent = '两次输入的密码不一致。'; return } if (!captchaCode) { hint.textContent = '请先点击右侧按钮获取验证码。'; return } if (document.getElementById('captcha').value.trim() !== captchaCode) { hint.textContent = '验证码错误，请等待 60 秒后重新获取。'; document.getElementById('captcha').value = ''; lockCaptcha(); return } hint.className = 'hint ok'; hint.textContent = mode === 'register' ? '注册成功，正在打开登录窗口。' : '登录成功。'; if (mode === 'register') setTimeout(() => openModal('login'), 900) } document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal() });
 
-    /* ===== 视频自动播放兜底 ===== */
-    document.querySelectorAll('.video-hero video').forEach(function (v) {
-      var p = v.play();
+    /* ===== 视频加载、播放兜底与 Loading 消失 ===== */
+    const heroVideo = document.querySelector('.video-hero video');
+    const heroSection = document.querySelector('.video-hero');
+
+    if (heroVideo) {
+      // 隐藏 Loading 动画的逻辑
+      if (heroVideo.readyState >= 3) {
+        heroSection.classList.add('ready');
+      } else {
+        heroVideo.addEventListener('canplay', function () {
+          heroSection.classList.add('ready');
+        }, { once: true });
+      }
+
+      // 自动播放被拦截时的兜底补播
+      var p = heroVideo.play();
       if (p && p.catch) {
         p.catch(function () {
           var retry = function () {
-            v.play().catch(function () {});
+            heroVideo.play().catch(function () {});
             document.removeEventListener('touchstart', retry);
             document.removeEventListener('click', retry);
           };
@@ -749,6 +794,6 @@
           document.addEventListener('click', retry, { once: true });
         });
       }
-    });
+    }
   </script>
 </body></html>
