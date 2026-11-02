@@ -153,7 +153,7 @@ main {
   z-index: 4;
 }
 
-/* ===== 轮播海报（手势拖拽版） ===== */
+/* ===== 轮播海报（原生滑动版） ===== */
 .slideshow {
   padding: 0 6px;
   margin-top: -20px;
@@ -161,34 +161,34 @@ main {
   position: relative;
 }
 
+/* 这是滑动容器 */
 .slides-container {
-  width: 100%;
-  overflow: hidden; /* 隐藏超出部分 */
-  border-radius: 12px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
-  cursor: grab;
-}
-
-.slides-container:active {
-  cursor: grabbing;
-}
-
-.slides-track {
   display: flex;
   width: 100%;
-  will-change: transform; /* 优化动画性能 */
+  overflow-x: auto; /* 允许横向滑动 */
+  scroll-snap-type: x mandatory; /* 滑动结束后自动吸附 */
+  -webkit-overflow-scrolling: touch; /* 开启iOS顺滑滚动 */
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+  scrollbar-width: none; /* 隐藏滚动条(Firefox) */
 }
 
+.slides-container::-webkit-scrollbar {
+  display: none; /* 隐藏滚动条(Chrome/Safari) */
+}
+
+/* 单张图容器 */
 .slide {
-  flex: 0 0 100%; /* 每张图占满一屏 */
+  flex: 0 0 100%; /* 绝对占据 100% 宽度，防止堆叠 */
   width: 100%;
+  scroll-snap-align: center; /* 吸附居中 */
 }
 
 .slide img {
   width: 100%;
   height: auto;
   display: block;
-  pointer-events: none; /* 防止浏览器默认的图片拖拽行为 */
+  pointer-events: none; /* 防止拖动图片本身 */
   user-select: none;
   -webkit-user-drag: none;
 }
