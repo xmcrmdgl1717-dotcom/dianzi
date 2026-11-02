@@ -1,25 +1,25 @@
 * {
   box-sizing: border-box;
   margin: 0;
-  padding: 0
+  padding: 0;
 }
 
 body {
   font-family: Arial, "PingFang SC", "Microsoft YaHei", sans-serif;
-  background: #0b0b0f; /* 全局暗色背景 */
+  background: #0b0b0f; 
   color: #e2e2e6;
   min-height: 100vh;
-  overflow-x: hidden;
+  /* 移除了 overflow-x: hidden; 允许页面横向滑动 */
 }
 
 a {
   text-decoration: none;
-  color: inherit
+  color: inherit;
 }
 
 img {
   display: block;
-  max-width: 100%
+  max-width: 100%;
 }
 
 .page {
@@ -27,6 +27,8 @@ img {
   background: #0b0b0f;
   min-height: 100vh;
   position: relative;
+  overflow-x: auto; /* 允许整个页面横向滚动 */
+  -webkit-overflow-scrolling: touch; /* 移动端顺滑滚动 */
 }
 
 /* 顶部导航 */
@@ -61,7 +63,7 @@ header {
   width: 36px;
   height: 36px;
   display: grid;
-  place-items: center
+  place-items: center;
 }
 
 .header-btn img {
@@ -153,10 +155,17 @@ main {
   z-index: 4;
 }
 
-/* 轮播海报 */
+/* ===== 轮播海报（支持左右滑动） ===== */
 .slideshow {
   padding: 0 6px;
   margin-top: -20px;
+  width: 100%;
+  overflow-x: auto; /* 开启横向滚动 */
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; /* 隐藏滚动条(Firefox) */
+}
+.slideshow::-webkit-scrollbar {
+  display: none; /* 隐藏滚动条(Chrome/Safari) */
 }
 
 .slide {
@@ -167,15 +176,19 @@ main {
   display: block;
 }
 
+/* 让图片保持原比例，如果过宽则允许滑动查看 */
 .slide img {
   width: 100%;
+  min-width: 100%; 
+  max-width: none; /* 解除最大宽度限制，防止挤压 */
+  height: auto;
   border-radius: 12px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
 }
 
 .dots {
   text-align: center;
-  margin: 12px 0 6px
+  margin: 12px 0 6px;
 }
 
 .dot {
@@ -227,7 +240,7 @@ main {
 }
 
 .primary-button:active {
-  transform: scale(.98)
+  transform: scale(.98);
 }
 
 .primary-button img {
@@ -250,27 +263,27 @@ main {
 
 .row {
   overflow: hidden;
-  margin: 8px 0
+  margin: 8px 0;
 }
 
 .track {
   display: flex;
   gap: 8px;
   width: max-content;
-  animation: marquee 22s linear infinite
+  animation: marquee 22s linear infinite;
 }
 
 .row.reverse .track {
-  animation-direction: reverse
+  animation-direction: reverse;
 }
 
 .row:hover .track {
-  animation-play-state: paused
+  animation-play-state: paused;
 }
 
 @keyframes marquee {
-  from { transform: translateX(0) }
-  to { transform: translateX(calc(-50% - 4px)) }
+  from { transform: translateX(0); }
+  to { transform: translateX(calc(-50% - 4px)); }
 }
 
 .game {
@@ -294,25 +307,25 @@ main {
   height: 76px;
   object-fit: cover;
   border-radius: 10px;
-  margin: auto
+  margin: auto;
 }
 
 .game .name {
   font-weight: 600;
   font-size: 12px;
   color: #d1d1d6;
-  margin-top: 6px
+  margin-top: 6px;
 }
 
 .game .value {
   font-weight: 700;
   font-size: 15px;
   color: #c9a96e;
-  margin-top: 2px
+  margin-top: 2px;
 }
 
 .game .value.muted {
-  color: #6b6b78
+  color: #6b6b78;
 }
 
 /* 底部 App 下载卡片 */
@@ -342,7 +355,7 @@ main {
   background: transparent;
   padding: 0;
   cursor: pointer;
-  width: 50%
+  width: 50%;
 }
 
 .download-row img {
@@ -576,11 +589,11 @@ main {
 
 .bottom-action:hover {
   transform: translateY(-2px);
-  filter: brightness(1.1)
+  filter: brightness(1.1);
 }
 
 .bottom-action:active {
-  transform: scale(.98)
+  transform: scale(.98);
 }
 
 .bottom-action small {
@@ -596,7 +609,7 @@ main {
   font-size: 11px;
   font-weight: 700;
   white-space: nowrap;
-  box-shadow: 0 2px 8px rgba(238, 89, 72, .4)
+  box-shadow: 0 2px 8px rgba(238, 89, 72, .4);
 }
 
 .bottom-action small:before {
@@ -608,12 +621,12 @@ main {
   height: 8px;
   background: #ee5948;
   border-radius: 2px;
-  transform: rotate(45deg)
+  transform: rotate(45deg);
 }
 
 .bottom-action span {
   position: relative;
-  z-index: 1
+  z-index: 1;
 }
 
 /* 弹窗样式 */
@@ -630,7 +643,7 @@ main {
 }
 
 .modal-backdrop.show {
-  display: flex
+  display: flex;
 }
 
 .modal {
@@ -640,20 +653,20 @@ main {
   border-radius: 16px;
   padding: 26px 24px;
   box-shadow: 0 20px 60px rgba(0, 0, 0, .8);
-  position: relative
+  position: relative;
 }
 
 .modal h2 {
   font-size: 22px;
   color: #c9a96e;
-  margin-bottom: 6px
+  margin-bottom: 6px;
 }
 
 .modal p {
   font-size: 13px;
   color: #8e8e9a;
   line-height: 1.6;
-  margin-bottom: 18px
+  margin-bottom: 18px;
 }
 
 .close {
@@ -664,18 +677,18 @@ main {
   background: none;
   font-size: 24px;
   color: #6b6b78;
-  cursor: pointer
+  cursor: pointer;
 }
 
 .field {
-  margin: 12px 0
+  margin: 12px 0;
 }
 
 .field label {
   display: block;
   font-size: 13px;
   color: #a1a1aa;
-  margin-bottom: 6px
+  margin-bottom: 6px;
 }
 
 .field input {
@@ -692,7 +705,7 @@ main {
 }
 
 .field input:focus {
-  border-color: #9575cd
+  border-color: #9575cd;
 }
 
 .field input::placeholder {
@@ -702,7 +715,7 @@ main {
 .code-row {
   display: grid;
   grid-template-columns: 1fr 100px;
-  gap: 10px
+  gap: 10px;
 }
 
 .code-box {
@@ -717,11 +730,11 @@ main {
   letter-spacing: .12em;
   cursor: pointer;
   user-select: none;
-  transition: filter .15s
+  transition: filter .15s;
 }
 
 .code-box:hover {
-  filter: brightness(1.1)
+  filter: brightness(1.1);
 }
 
 .code-box.locked {
@@ -729,7 +742,7 @@ main {
   background: #1c1c24;
   border-color: #2a2a35;
   color: #4a4a55;
-  letter-spacing: .05em
+  letter-spacing: .05em;
 }
 
 .submit {
@@ -754,11 +767,11 @@ main {
   min-height: 20px;
   color: #c45b42;
   font-size: 12px;
-  margin-top: 10px
+  margin-top: 10px;
 }
 
 .hint.ok {
-  color: #31884b
+  color: #31884b;
 }
 
 .switch {
@@ -768,7 +781,7 @@ main {
   color: #9575cd;
   font-size: 13px;
   cursor: pointer;
-  margin: 16px auto 0
+  margin: 16px auto 0;
 }
 
 @media(max-width:420px) {
@@ -777,7 +790,7 @@ main {
     height: 32px;
   }
   .primary-button {
-    width: 85%
+    width: 85%;
   }
   .lb-header {
     flex-direction: column;
@@ -788,13 +801,13 @@ main {
 
 @media(prefers-reduced-motion:reduce) {
   .primary-button, .bottom-action, .game, .submit {
-    transition: none
+    transition: none;
   }
 }
 
 /* ===== Safari 浏览器拦截弹窗样式 ===== */
 .safari-modal-overlay {
-  display: none; /* 默认隐藏 */
+  display: none; 
   position: fixed;
   inset: 0;
   background: rgba(15, 20, 30, 0.95);
@@ -829,7 +842,6 @@ main {
   line-height: 1;
 }
 
-/* 纯 CSS 绘制 Safari 指南针图标 */
 .safari-icon-wrap {
   width: 64px;
   height: 64px;
