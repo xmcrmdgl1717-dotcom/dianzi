@@ -29,7 +29,6 @@
       max-width: 100%
     }
 
-    /* 解除页面宽度限制，让背景和视频可以通栏 */
     .page {
       width: 100%;
       background: #0b0b0f;
@@ -37,7 +36,7 @@
       position: relative;
     }
 
-    /* 顶部导航（通栏背景，内容居中） */
+    /* 顶部导航 */
     header {
       position: fixed;
       top: 0;
@@ -52,7 +51,7 @@
 
     .header-inner {
       height: 100%;
-      max-width: 620px; /* 限制宽度并居中 */
+      max-width: 620px;
       margin: 0 auto;
       padding: 0 16px;
       display: flex;
@@ -93,7 +92,7 @@
       padding-top: 0;
     }
 
-    /* ===== 顶部全屏视频（占据 100vw 宽度） ===== */
+    /* ===== 顶部全屏视频 ===== */
     .video-hero {
       position: relative;
       width: 100%;
@@ -103,7 +102,6 @@
       background: #0b0b0f;
     }
 
-    /* 视频加载动画 */
     .video-loader {
       position: absolute;
       top: 50%;
@@ -151,7 +149,7 @@
       pointer-events: none;
     }
 
-    /* ===== 中间内容容器（限制宽度并居中） ===== */
+    /* ===== 中间内容容器 ===== */
     .content-section {
       width: 100%;
       max-width: 620px;
@@ -162,7 +160,7 @@
       z-index: 4;
     }
 
-    /* 1. 轮播海报 */
+    /* 轮播海报 */
     .slideshow {
       padding: 0 6px;
       margin-top: -20px;
@@ -204,7 +202,7 @@
       border-radius: 4px;
     }
 
-    /* 2. 进入网页版按钮 */
+    /* 进入网页版按钮 */
     .primary-stack {
       display: flex;
       flex-direction: column;
@@ -246,7 +244,7 @@
       filter: brightness(0) invert(1);
     }
 
-    /* 3. 游戏画廊 */
+    /* 游戏画廊 */
     .gallery {
       background: #14141a;
       border-radius: 16px;
@@ -360,6 +358,145 @@
       border-radius: 8px;
     }
 
+    /* ================= 新增：领奖排行榜样式 ================= */
+    .leaderboard {
+      background: #14141a;
+      border-radius: 16px;
+      padding: 16px 12px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, .3);
+      border: 1px solid rgba(255, 255, 255, .04);
+    }
+
+    .lb-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      padding-bottom: 12px;
+    }
+
+    .lb-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #c9a96e;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .lb-title::before {
+      content: "🏆";
+      font-size: 20px;
+    }
+
+    .lb-tabs {
+      display: flex;
+      background: #0b0b0f;
+      border-radius: 8px;
+      padding: 4px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .lb-tab {
+      padding: 6px 14px;
+      font-size: 13px;
+      color: #8e8e9a;
+      cursor: pointer;
+      border-radius: 6px;
+      transition: all 0.3s;
+    }
+
+    .lb-tab.active {
+      background: linear-gradient(135deg, #9575cd, #6f4bb3);
+      color: #fff;
+      font-weight: 600;
+      box-shadow: 0 2px 8px rgba(149, 117, 205, 0.3);
+    }
+
+    .lb-list {
+      max-height: 380px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    /* 自定义滚动条 */
+    .lb-list::-webkit-scrollbar {
+      width: 4px;
+    }
+    .lb-list::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.02);
+      border-radius: 4px;
+    }
+    .lb-list::-webkit-scrollbar-thumb {
+      background: rgba(149, 117, 205, 0.4);
+      border-radius: 4px;
+    }
+
+    .lb-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 8px;
+      border-radius: 8px;
+      margin-bottom: 4px;
+      transition: background 0.2s;
+    }
+
+    .lb-item:hover {
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .lb-user {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 1;
+    }
+
+    .lb-rank {
+      width: 24px;
+      height: 24px;
+      display: grid;
+      place-items: center;
+      font-size: 14px;
+      font-weight: 800;
+      color: #6b6b78;
+      font-style: italic;
+      flex-shrink: 0;
+    }
+
+    /* 前三名样式 */
+    .lb-item:nth-child(1) .lb-rank { color: #ffd700; font-size: 18px; text-shadow: 0 0 8px rgba(255,215,0,0.4); }
+    .lb-item:nth-child(2) .lb-rank { color: #c0c0c0; font-size: 16px; }
+    .lb-item:nth-child(3) .lb-rank { color: #cd7f32; font-size: 16px; }
+    
+    .lb-item:nth-child(1) .lb-name { color: #ffd700; }
+    .lb-item:nth-child(2) .lb-name { color: #c0c0c0; }
+    .lb-item:nth-child(3) .lb-name { color: #cd7f32; }
+
+    .lb-name {
+      font-size: 14px;
+      color: #d1d1d6;
+      font-family: monospace;
+      letter-spacing: 0.5px;
+    }
+
+    .lb-amount {
+      font-size: 14px;
+      font-weight: 700;
+      color: #c9a96e;
+      text-align: right;
+    }
+
+    .lb-amount::before {
+      content: "¥";
+      font-size: 12px;
+      margin-right: 2px;
+      opacity: 0.8;
+    }
+
     /* 页脚 */
     .footer {
       width: 100%;
@@ -372,13 +509,6 @@
       background: #0b0b0f;
     }
 
-    .footer img {
-      display: block;
-      width: 100%;
-      margin: auto auto 12px;
-      opacity: 0.6;
-    }
-
     /* 底部悬浮操作栏 */
     .bottom-actions {
       position: fixed;
@@ -386,7 +516,7 @@
       transform: translateX(-50%);
       bottom: calc(16px + env(safe-area-inset-bottom));
       width: calc(100% - 32px);
-      max-width: 588px; /* 控制最大宽度，保证在 PC 端不会变形 */
+      max-width: 588px;
       z-index: 50;
       display: flex;
       gap: 10px;
@@ -625,6 +755,11 @@
       .primary-button {
         width: 85%
       }
+      .lb-header {
+        flex-direction: column;
+        gap: 12px;
+        align-items: flex-start;
+      }
     }
 
     @media(prefers-reduced-motion:reduce) {
@@ -633,12 +768,6 @@
       }
     }
   </style>
-  <script>
-    var jumpUrl = "https://google.com";
-    function jump() {
-      window.location.href = jumpUrl;
-    }
-  </script>
 </head>
 
 <body style="">
@@ -653,7 +782,7 @@
     
     <main>
       
-      <!-- ===== 1. 首屏全屏视频（通栏） ===== -->
+      <!-- 1. 首屏全屏视频 -->
       <section class="video-hero">
         <div class="video-loader"></div>
         <video
@@ -671,7 +800,7 @@
         <div class="video-overlay"></div>
       </section>
 
-      <!-- ===== 2. 中间内容容器（居中对齐） ===== -->
+      <!-- 2. 中间内容容器 -->
       <div class="content-section">
         
         <!-- 轮播海报 -->
@@ -710,10 +839,25 @@
           </div>
         </section>
 
+        <!-- ===== 3. 新增：领奖排行榜 ===== -->
+        <section class="leaderboard">
+          <div class="lb-header">
+            <div class="lb-title">领奖排行榜</div>
+            <div class="lb-tabs">
+              <div class="lb-tab active" data-type="daily">每日</div>
+              <div class="lb-tab" data-type="weekly">每周</div>
+              <div class="lb-tab" data-type="monthly">每月</div>
+            </div>
+          </div>
+          <div class="lb-list" id="lb-list">
+            <!-- JS 动态渲染 -->
+          </div>
+        </section>
+
       </div>
 
       <footer class="footer">
-        <img src="assets/source/footer.webp" alt="品牌合作信息">
+        <!-- 移除了原有的 footer 图片 -->
         <div>COPYRIGHT © 2026 U8.com All Rights Reserved.</div>
       </footer>
     </main>
@@ -749,9 +893,9 @@
   </div>
 
   <script>
-    const games = [['麻将胡了', 'game-mahjong.webp', 'x25000', 0], ['麻将胡了2', 'game-mahjong2.webp', 'x100000', 1], ['赏金女王', 'game-bounty-queen.webp', 'x50000', 0], ['赏金大对决', 'game-bounty-duel.webp', 'x5000', 0], ['寻宝黄金城', 'game-gold-city.webp', 'x100000', 0], ['赏金船长', 'game-bounty-captain.webp', 'x30000', 0], ['亡灵大盗', 'game-undead-thief.webp', 'x25000', 0], ['少林足球', 'game-shaolin-soccer.webp', 'x4000', 0], ['招财喵', 'game-lucky-cat.webp', 'x20000', 0], ['麒麟送宝', 'game-qilin.webp', 'x80000', 1], ['夜醉佳人', 'game-night-beauty.webp', 'x100000', 0], ['双喜临门', 'game-double-joy.webp', 'x100000', 0], ['福运象财神', 'game-elephant-god.webp', 'x100000', 0], ['爱尔兰精灵', 'game-irish-elf.webp', 'x100000', 1], ['寻龙探宝', 'game-dragon-treasure.webp', 'x2500', 0], ['十倍金牛', 'game-golden-bull.webp', 'x2000', 0], ['赢财神', 'game-fortune-god.webp', 'x100000', 0]];
-    function renderGames() { ['row1', 'row2', 'row3'].forEach((id, ri) => { const row = document.getElementById(id); if (ri === 1) row.classList.add('reverse'); const track = document.createElement('div'); track.className = 'track'; const half = document.createElement('div'); half.className = 'track-half'; half.style.display = 'flex'; half.style.gap = '8px'; games.slice(ri * 6, ri === 2 ? games.length : ri * 6 + 6).forEach(g => { const el = document.createElement('button'); el.type = 'button'; el.className = 'game'; el.onclick = () => openModal('register'); el.innerHTML = '<img src="assets/source/' + g[1] + '" alt="' + g[0] + '"><div class="name">' + g[0] + '</div><div class="value ' + (g[3] ? '' : 'muted') + '">' + g[2] + '</div>'; half.appendChild(el) }); track.appendChild(half); track.appendChild(half.cloneNode(true)); row.appendChild(track) }); } renderGames();
-
+    // ==========================================
+    // 1. 轮播图逻辑
+    // ==========================================
     let slideIndex = 0;
     function showSlide(i) { 
       slideIndex = i; 
@@ -760,9 +904,31 @@
     } 
     setInterval(() => showSlide((slideIndex + 1) % 3), 5000);
 
-    let mode = 'register', captchaCode = '', captchaLocked = false, captchaTimer = null; function genCaptcha() { const pools = ['ABCDEFGHJKLMNPQRSTUVWXYZ', 'abcdefghjkmnpqrstuvwxyz', '23456789', '@#$%&*!?']; let s = ''; for (let i = 0; i < 6; i++) { const p = pools[i % 3 === 2 ? (i === 4 ? 2 : 3) : i % 3]; s += p[Math.floor(Math.random() * p.length)] } return s } function getCaptcha() { if (captchaLocked) return; captchaCode = genCaptcha(); const box = document.getElementById('captchaCode'); box.textContent = captchaCode; box.classList.remove('locked'); const hint = document.getElementById('formHint'); hint.className = 'hint'; hint.textContent = '验证码已生成，请输入 6 位验证码。' } function lockCaptcha() { captchaLocked = true; const box = document.getElementById('captchaCode'); box.classList.add('locked'); let s = 60; box.textContent = s + 's 后重试'; captchaTimer = setInterval(() => { s--; if (s <= 0) { clearInterval(captchaTimer); captchaTimer = null; captchaLocked = false; box.classList.remove('locked'); box.textContent = '重新获取' } else { box.textContent = s + 's 后重试' } }, 1000) } function resetCaptcha() { if (captchaTimer) { clearInterval(captchaTimer); captchaTimer = null } captchaCode = ''; captchaLocked = false; const box = document.getElementById('captchaCode'); box.classList.remove('locked'); box.textContent = '点击获取' } function openModal(next) { mode = next; renderModal(); document.getElementById('modalBackdrop').classList.add('show'); setTimeout(() => document.getElementById('username').focus(), 30) } function closeModal() { document.getElementById('modalBackdrop').classList.remove('show') } function backdropClose(e) { if (e.target.id === 'modalBackdrop') closeModal() } function switchMode() { openModal(mode === 'register' ? 'login' : 'register') } function renderModal() { const r = mode === 'register'; document.getElementById('modalTitle').textContent = r ? '注册账号' : '登录账号'; document.getElementById('modalSub').textContent = r ? '填写信息完成注册。' : '输入账号密码完成登录。'; document.getElementById('confirmField').style.display = r ? 'block' : 'none'; document.getElementById('phoneField').style.display = r ? 'block' : 'none'; document.getElementById('confirm').required = r; document.getElementById('phone').required = r; document.getElementById('submitBtn').textContent = r ? '注册账号' : '登录账号'; document.getElementById('switchBtn').textContent = r ? '已有账号？前往登录' : '没有账号？注册账号'; document.getElementById('formHint').textContent = ''; resetCaptcha() } function handleSubmit(e) { e.preventDefault(); const hint = document.getElementById('formHint'); hint.className = 'hint'; if (mode === 'register' && document.getElementById('password').value !== document.getElementById('confirm').value) { hint.textContent = '两次输入的密码不一致。'; return } if (!captchaCode) { hint.textContent = '请先点击右侧按钮获取验证码。'; return } if (document.getElementById('captcha').value.trim() !== captchaCode) { hint.textContent = '验证码错误，请等待 60 秒后重新获取。'; document.getElementById('captcha').value = ''; lockCaptcha(); return } hint.className = 'hint ok'; hint.textContent = mode === 'register' ? '注册成功，正在打开登录窗口。' : '登录成功。'; if (mode === 'register') setTimeout(() => openModal('login'), 900) } document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal() });
+    // ==========================================
+    // 2. 游戏画廊逻辑
+    // ==========================================
+    const games = [['麻将胡了', 'game-mahjong.webp', 'x25000', 0], ['麻将胡了2', 'game-mahjong2.webp', 'x100000', 1], ['赏金女王', 'game-bounty-queen.webp', 'x50000', 0], ['赏金大对决', 'game-bounty-duel.webp', 'x5000', 0], ['寻宝黄金城', 'game-gold-city.webp', 'x100000', 0], ['赏金船长', 'game-bounty-captain.webp', 'x30000', 0], ['亡灵大盗', 'game-undead-thief.webp', 'x25000', 0], ['少林足球', 'game-shaolin-soccer.webp', 'x4000', 0], ['招财喵', 'game-lucky-cat.webp', 'x20000', 0], ['麒麟送宝', 'game-qilin.webp', 'x80000', 1], ['夜醉佳人', 'game-night-beauty.webp', 'x100000', 0], ['双喜临门', 'game-double-joy.webp', 'x100000', 0], ['福运象财神', 'game-elephant-god.webp', 'x100000', 0], ['爱尔兰精灵', 'game-irish-elf.webp', 'x100000', 1], ['寻龙探宝', 'game-dragon-treasure.webp', 'x2500', 0], ['十倍金牛', 'game-golden-bull.webp', 'x2000', 0], ['赢财神', 'game-fortune-god.webp', 'x100000', 0]];
+    function renderGames() { ['row1', 'row2', 'row3'].forEach((id, ri) => { const row = document.getElementById(id); if (ri === 1) row.classList.add('reverse'); const track = document.createElement('div'); track.className = 'track'; const half = document.createElement('div'); half.className = 'track-half'; half.style.display = 'flex'; half.style.gap = '8px'; games.slice(ri * 6, ri === 2 ? games.length : ri * 6 + 6).forEach(g => { const el = document.createElement('button'); el.type = 'button'; el.className = 'game'; el.onclick = () => openModal('register'); el.innerHTML = '<img src="assets/source/' + g[1] + '" alt="' + g[0] + '"><div class="name">' + g[0] + '</div><div class="value ' + (g[3] ? '' : 'muted') + '">' + g[2] + '</div>'; half.appendChild(el) }); track.appendChild(half); track.appendChild(half.cloneNode(true)); row.appendChild(track) }); } renderGames();
 
-    /* ===== 视频加载、播放兜底与 Loading 消失 ===== */
+    // ==========================================
+    // 3. 弹窗及验证码逻辑
+    // ==========================================
+    let mode = 'register', captchaCode = '', captchaLocked = false, captchaTimer = null; 
+    function genCaptcha() { const pools = ['ABCDEFGHJKLMNPQRSTUVWXYZ', 'abcdefghjkmnpqrstuvwxyz', '23456789', '@#$%&*!?']; let s = ''; for (let i = 0; i < 6; i++) { const p = pools[i % 3 === 2 ? (i === 4 ? 2 : 3) : i % 3]; s += p[Math.floor(Math.random() * p.length)] } return s } 
+    function getCaptcha() { if (captchaLocked) return; captchaCode = genCaptcha(); const box = document.getElementById('captchaCode'); box.textContent = captchaCode; box.classList.remove('locked'); const hint = document.getElementById('formHint'); hint.className = 'hint'; hint.textContent = '验证码已生成，请输入 6 位验证码。' } 
+    function lockCaptcha() { captchaLocked = true; const box = document.getElementById('captchaCode'); box.classList.add('locked'); let s = 60; box.textContent = s + 's 后重试'; captchaTimer = setInterval(() => { s--; if (s <= 0) { clearInterval(captchaTimer); captchaTimer = null; captchaLocked = false; box.classList.remove('locked'); box.textContent = '重新获取' } else { box.textContent = s + 's 后重试' } }, 1000) } 
+    function resetCaptcha() { if (captchaTimer) { clearInterval(captchaTimer); captchaTimer = null } captchaCode = ''; captchaLocked = false; const box = document.getElementById('captchaCode'); box.classList.remove('locked'); box.textContent = '点击获取' } 
+    function openModal(next) { mode = next; renderModal(); document.getElementById('modalBackdrop').classList.add('show'); setTimeout(() => document.getElementById('username').focus(), 30) } 
+    function closeModal() { document.getElementById('modalBackdrop').classList.remove('show') } 
+    function backdropClose(e) { if (e.target.id === 'modalBackdrop') closeModal() } 
+    function switchMode() { openModal(mode === 'register' ? 'login' : 'register') } 
+    function renderModal() { const r = mode === 'register'; document.getElementById('modalTitle').textContent = r ? '注册账号' : '登录账号'; document.getElementById('modalSub').textContent = r ? '填写信息完成注册。' : '输入账号密码完成登录。'; document.getElementById('confirmField').style.display = r ? 'block' : 'none'; document.getElementById('phoneField').style.display = r ? 'block' : 'none'; document.getElementById('confirm').required = r; document.getElementById('phone').required = r; document.getElementById('submitBtn').textContent = r ? '注册账号' : '登录账号'; document.getElementById('switchBtn').textContent = r ? '已有账号？前往登录' : '没有账号？注册账号'; document.getElementById('formHint').textContent = ''; resetCaptcha() } 
+    function handleSubmit(e) { e.preventDefault(); const hint = document.getElementById('formHint'); hint.className = 'hint'; if (mode === 'register' && document.getElementById('password').value !== document.getElementById('confirm').value) { hint.textContent = '两次输入的密码不一致。'; return } if (!captchaCode) { hint.textContent = '请先点击右侧按钮获取验证码。'; return } if (document.getElementById('captcha').value.trim() !== captchaCode) { hint.textContent = '验证码错误，请等待 60 秒后重新获取。'; document.getElementById('captcha').value = ''; lockCaptcha(); return } hint.className = 'hint ok'; hint.textContent = mode === 'register' ? '注册成功，正在打开登录窗口。' : '登录成功。'; if (mode === 'register') setTimeout(() => openModal('login'), 900) } 
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal() });
+
+    // ==========================================
+    // 4. 视频加载及播放兜底
+    // ==========================================
     const heroVideo = document.querySelector('.video-hero video');
     const heroSection = document.querySelector('.video-hero');
 
@@ -788,5 +954,116 @@
         });
       }
     }
+
+    // ==========================================
+    // 5. 领奖排行榜数据与渲染逻辑
+    // ==========================================
+    // 基于日期的种子，保证同一天内刷新页面数据不变，隔天自动更新
+    const today = new Date();
+    const seedString = `${today.getFullYear()}-${today.getMonth()+1}-${today.getDate()}`;
+    let seed = 0;
+    for (let i = 0; i < seedString.length; i++) {
+        seed += seedString.charCodeAt(i);
+    }
+
+    // 伪随机数生成器
+    function seededRandom() {
+        let x = Math.sin(seed++) * 10000;
+        return x - Math.floor(x);
+    }
+
+    // 用户名生成池
+    const prefixes = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'user', 'king', 'vip', 'luck', 'win', 'top', 'boss', 'sun', 'star', 'moon'];
+    const suffixes = ['01', '88', '99', '66', '77', '8', '9', '0', 'a', 'b', 'c', 'x', 'y', 'z', '168', '888', '666'];
+
+    function generateUsername() {
+        const pLen = Math.floor(seededRandom() * 4) + 2; // 2-5个字符
+        const sLen = Math.floor(seededRandom() * 3) + 1; // 1-3个字符
+        let p = '';
+        let s = '';
+        for(let i=0; i<pLen; i++) {
+            p += prefixes[Math.floor(seededRandom() * prefixes.length)];
+        }
+        for(let i=0; i<sLen; i++) {
+            s += suffixes[Math.floor(seededRandom() * suffixes.length)];
+        }
+        return `${p}***${s}`;
+    }
+
+    function generateData(type) {
+        let data = [];
+        let baseMax = 0;
+        let baseMin = 0;
+
+        if (type === 'daily') {
+            baseMax = 88888;
+            baseMin = 500;
+        } else if (type === 'weekly') {
+            baseMax = 588888;
+            baseMin = 5000;
+        } else {
+            baseMax = 3888888;
+            baseMin = 50000;
+        }
+
+        for (let i = 0; i < 20; i++) {
+            // 使用递减趋势生成金额，确保排名越高金额越大
+            let ratio = 1 - (i / 25); 
+            let amount = baseMin + (baseMax - baseMin) * ratio * (0.8 + seededRandom() * 0.4);
+            // 保留两位小数
+            amount = amount.toFixed(2);
+            
+            data.push({
+                name: generateUsername(),
+                amount: parseFloat(amount)
+            });
+        }
+
+        // 按金额从高到低排序
+        data.sort((a, b) => b.amount - a.amount);
+
+        // 格式化金额添加千分位
+        data.forEach(item => {
+            item.formattedAmount = item.amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        });
+
+        return data;
+    }
+
+    function renderLeaderboard(type) {
+        const listEl = document.getElementById('lb-list');
+        const data = generateData(type);
+        let html = '';
+        data.forEach((item, index) => {
+            let rank = index + 1;
+            // 第一名显示皇冠或者特殊图标可以在这里处理，目前用数字
+            html += `
+                <div class="lb-item">
+                    <div class="lb-user">
+                        <div class="lb-rank">${rank}</div>
+                        <div class="lb-name">${item.name}</div>
+                    </div>
+                    <div class="lb-amount">${item.formattedAmount}</div>
+                </div>
+            `;
+        });
+        listEl.innerHTML = html;
+    }
+
+    // 初始化渲染每日榜
+    renderLeaderboard('daily');
+
+    // Tab 切换事件
+    document.querySelectorAll('.lb-tab').forEach(tab => {
+        tab.addEventListener('click', function() {
+            // 切换 active 样式
+            document.querySelectorAll('.lb-tab').forEach(t => t.classList.remove('active'));
+            this.classList.add('active');
+            
+            // 重新生成数据并渲染
+            const type = this.getAttribute('data-type');
+            renderLeaderboard(type);
+        });
+    });
   </script>
 </body></html>
